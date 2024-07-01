@@ -42,7 +42,7 @@ This example shows part of a building exemplar with a custom department that has
 | 0xEA54D285 | Budget Item: Purpose            | Uint32 | 2 | 0x87BD3990,0x46261226 | The purpose id(s). In this case the  custom budget department expense id followed by the custom budget department income id.
 | 0xEA54D286 | Budget Item: Cost               | Sint64 | 2 | 0x0000000000000064,0x00000000000000FA | The line item cost(s). In this case the  expense line item followed by the income line item.
 | 0x90222B81 | Budget: Department Budget Group | Uint32 | 2 | 0x0A5A72D1,0x0A5A72D1 | The budget group that the department(s) belong to. In this case both items belong to the 'Business Deals' group |
-| 0x4252085F | Budget: Department Name Key     | Uint32 | 4 | 0x26350A44,0x030F0A4F,0x26350A44,0x030F0A4F | The group and instance ids of the LTEXT file(s) that contains the department name(s). Reps must be a multiple of 2. | 
+| 0x4252085F | Budget: Department Name Key     | Uint32 | 4 | 0x26350A44,0x030F0A4F,0x26350A44,0x030F0A4F | The group and instance ids of the LTEXT file(s) that contain the department name(s). Reps must be a multiple of 2. | 
 
 
 ## System Requirements
