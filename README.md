@@ -23,7 +23,7 @@ Each property supports multiple values, and the number of values in each propert
 
 | Budget Group ID | Budget Window |
 |-----------------|-------------|
-| 0xA5A72D1 | Business Deals |
+| 0x0A5A72D1 | Business Deals |
 | 0x6A357B96 | City Beautification |
 | 0xEA597195 | Government Buildings |
 | 0x6A357B7F | Health and Education |
