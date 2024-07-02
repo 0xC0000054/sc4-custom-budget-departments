@@ -19,7 +19,7 @@ Each property supports multiple values, and the number of values in each propert
 | 0xEA54D285  | Budget Item: Purpose | Uint32 | Set to `0x87BD3990` for an expense line item or `0x46261226` for an income line item. |
 | 0xEA54D286  | Budget Item: Cost | Sint64 | Cost(s) of each line item. |
 | 0x90222B81  | Budget: Department Budget Group | Uint32 | Controls which budget window the department(s) are grouped under. See the Budget Groups table below. |
-| 0x4252085F  | Budget: Department Name Key | Uint32 | Group and instance ID of the LTEXT file(s) that contains the department name(s) |
+| 0x4252085F  | Budget: Department Name Key | Uint32 | Group and instance ID of the LTEXT file(s) that contain the department name(s) |
 
 | Budget Group ID | Budget Window |
 |-----------------|-------------|
