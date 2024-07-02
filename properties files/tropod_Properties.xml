@@ -265,6 +265,7 @@
 			<property num="0x2c0c922e" type="Uint32" name="MySim Walk Gender" desc="Male=0. Female=1. Used by  MySim Ped chooser"></property>
 			<property num="0x2c23a3a1" type="Uint32" name="Final Group Id" desc="Automata group ID which controls the creation and driving properties for this automaton"></property>
 			<property num="0x2c8f8746" type="Uint32" name="Exemplar Category" desc="Categorizes this exemplar; for debug and exemplar editors use only"></property>
+			<property num="0x4252085F" type="Uint32" name="Budget: Department Name Key" desc="Group and instance ID of the LTEXT file(s) that contain the department name(s)"></property>
 			<property num="0x47bb3f10" type="Sint32" name="Min Value" desc="Minimum active demand, use 0x80000000 for none"></property>
 			<property num="0x47bb3f11" type="Sint32" name="Max Value" desc="Maximum active demand, use 0x7fffffff for none"></property>
 			<property num="0x47bb3f20" type="Sint32" name="Initial Supply" desc="Initial supply of this resource, [min, max]"></property>
@@ -984,6 +985,7 @@
 			<property num="0x8c3caef5" type="Float32" name="Ferry Fare" desc="Income per traveller from a ferry trip"></property>
 			<property num="0x8c3e8185" type="Uint32" name="Travellers per bus" desc="How many travellers it takes to yield a bus automata"></property>
 			<property num="0x8cb3511f" type="Uint32" name="Occupant Types" desc="Types of occupants"></property>
+			<property num="0x90222B81" type="Uint32" name="Budget: Department Budget Group" desc="Controls which budget window the department(s) are grouped under."></property>
 			<property num="0xa7607d70" type="Sint32" name="WeeksForCompleteTemperatureSimulation" desc="WeeksForCompleteTemperatureSimulation"></property>
 			<property num="0xa7607d71" type="Sint32" name="WeeksForCompleteMoistureSimulation" desc="WeeksForCompleteMoistureSimulation"></property>
 			<property num="0xa7607d72" type="Sint32" name="SimulationSpreadWritingRadius" desc="SimulationSpreadWritingRadius"></property>
