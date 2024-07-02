@@ -1606,6 +1606,11 @@ Automata group ID which controls the creation and driving properties for this au
 Categorizes this exemplar; for debug and exemplar editors use only
 </HELP>
   </PROPERTY>
+  <PROPERTY Name="Budget: Department Name Key" ID="0x4252085F" Type="Uint32" ShowAsHex="Y">
+    <HELP>
+Group and instance ID of the LTEXT file(s) that contain the department name(s)
+</HELP>
+  </PROPERTY>
   <PROPERTY Name="Minimum Value" ID="0x47bb3f10" Type="Sint32" Default="0" ShowAsHex="Y">
     <HELP>
 Minimum active demand, use 0x80000000 for none
@@ -5536,6 +5541,25 @@ How many travellers it takes to yield a bus automata
 Types of occupants
 </HELP>
   </PROPERTY>
+  <PROPERTY Name="Budget: Department Budget Group" ID="0x90222B81" Type="Uint32" ShowAsHex="Y">
+    <HELP>
+Controls which budget window the department(s) are grouped under
+</HELP>
+    <OPTION Value="0x0A5A72D1" Name="Business Deals">
+    </OPTION>
+    <OPTION Value="0x6A357B96" Name="City Beautification">
+    </OPTION>
+    <OPTION Value="0xEA597195" Name="Government Buildings">
+    </OPTION>
+	<OPTION Value="0x6A357B7F" Name="Health and Education">
+    </OPTION>
+    <OPTION Value="0x4A357B40" Name="Public Safety">
+    </OPTION>
+    <OPTION Value="0xAA369059" Name="Transportation">
+    </OPTION>
+    <OPTION Value="0x4A357EAF" Name="Utilities">
+    </OPTION>
+  </PROPERTY>
   <PROPERTY Name="mnWeeksForCompleteTemperatureSimulation" ID="0xa7607d70" Type="Sint32" Default="1" ShowAsHex="Y">
     <HELP>
 mnWeeksForCompleteTemperatureSimulation
@@ -8922,6 +8946,10 @@ GUID(s) of purpose ID for this budget item.
     <OPTION Value="0xca639989" Name="Park Effect">
     </OPTION>
     <OPTION Value="0x0c3bf549" Name="Toll Booth Maintenance">
+    </OPTION>
+	<OPTION Value="0x87bd3990" Name="Custom Department Expense">
+    </OPTION>
+	<OPTION Value="0x46261226" Name="Custom Department Income">
     </OPTION>
   </PROPERTY>
   <PROPERTY Name="Budget Item: Cost" ID="0xea54d286" Type="Sint64" Count="-1" Default="0" MinValue="0" ShowAsHex="N">
