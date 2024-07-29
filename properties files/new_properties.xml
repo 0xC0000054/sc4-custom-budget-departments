@@ -1606,9 +1606,9 @@ Automata group ID which controls the creation and driving properties for this au
 Categorizes this exemplar; for debug and exemplar editors use only
 </HELP>
   </PROPERTY>
-  <PROPERTY Name="Budget: Department Name Key" ID="0x4252085F" Type="Uint32" ShowAsHex="Y">
+  <PROPERTY Name="Budget: Custom Department Name Key" ID="0x4252085F" Type="Uint32" ShowAsHex="Y">
     <HELP>
-Group and instance ID of the LTEXT file(s) that contain the department name(s)
+Specifies the name key for a custom budget department. The format is a group of 3 Uint32 values, consisting of the department id followed by the group and instance ids of the LTEXT file.
 </HELP>
   </PROPERTY>
   <PROPERTY Name="Minimum Value" ID="0x47bb3f10" Type="Sint32" Default="0" ShowAsHex="Y">
@@ -5541,24 +5541,10 @@ How many travellers it takes to yield a bus automata
 Types of occupants
 </HELP>
   </PROPERTY>
-  <PROPERTY Name="Budget: Department Budget Group" ID="0x90222B81" Type="Uint32" ShowAsHex="Y">
+  <PROPERTY Name="Budget: Custom Department Budget Group" ID="0x90222B81" Type="Uint32" ShowAsHex="Y">
     <HELP>
-Controls which budget window the department(s) are grouped under
+Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id.
 </HELP>
-    <OPTION Value="0x0A5A72D1" Name="Business Deals">
-    </OPTION>
-    <OPTION Value="0x6A357B96" Name="City Beautification">
-    </OPTION>
-    <OPTION Value="0xEA597195" Name="Government Buildings">
-    </OPTION>
-	<OPTION Value="0x6A357B7F" Name="Health and Education">
-    </OPTION>
-    <OPTION Value="0x4A357B40" Name="Public Safety">
-    </OPTION>
-    <OPTION Value="0xAA369059" Name="Transportation">
-    </OPTION>
-    <OPTION Value="0x4A357EAF" Name="Utilities">
-    </OPTION>
   </PROPERTY>
   <PROPERTY Name="mnWeeksForCompleteTemperatureSimulation" ID="0xa7607d70" Type="Sint32" Default="1" ShowAsHex="Y">
     <HELP>

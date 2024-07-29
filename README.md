@@ -8,18 +8,18 @@ how the game's Landmark Effect and Business Deal Income budget purpose ids work.
 ## Exemplar Properties
 
 The DLL depends on the game's existing `Budget Item:` properties, and adds a few new properties. 
-Each property supports multiple values, and the number of values in each property must match.
+Each property supports multiple values.
 
 ### Property Tables
 
 | Property ID | Property Name | Type | Description   |
 |-------------|---------------|------|--------------------------
 | 0xEA54D283  | Budget Item: Department | Uint32 | Used to set the budget department id(s). For new departments it should be a random IID value. |
-| 0xEA54D284  | Budget Item: Line | Uint32 | Used to set the budget department line items for the building. It should be a random IID value for each line item. |
+| 0xEA54D284  | Budget Item: Line | Uint32 | Used to set the budget department line items for the building. It should be a random IID value for each custom budget department line item. |
 | 0xEA54D285  | Budget Item: Purpose | Uint32 | Set to `0x87BD3990` for an expense line item or `0x46261226` for an income line item. |
 | 0xEA54D286  | Budget Item: Cost | Sint64 | Cost(s) of each line item. |
-| 0x90222B81  | Budget: Department Budget Group | Uint32 | Controls which budget window the department(s) are grouped under. See the Budget Groups table below. |
-| 0x4252085F  | Budget: Department Name Key | Uint32 | Group and instance ID of the LTEXT file(s) that contain the department name(s) |
+| 0x90222B81  | Budget: Custom Department Budget Group | Uint32 | Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id. See the Budget Groups table below. |
+| 0x4252085F  | Budget: Custom Department Name Key | Uint32 | Specifies the name key for a custom budget department. The format is a group of 3 Uint32 values, consisting of the department id followed by the group and instance ids of the LTEXT file. |
 
 | Budget Group ID | Budget Window |
 |-----------------|-------------|
@@ -38,11 +38,11 @@ This example shows part of a building exemplar with a custom department that has
 | Property ID | Property Name | Type | Reps | Values | Value Description |
 |--------------------------------|------------|--------|---|-----------------------|--------------------------------|  
 | 0xEA54D283 | Budget Item: Department         | Uint32 | 2 | 0x790651AD,0x790651AD | The department id(s). Usually the same value, but it should be possible for the line items to belong to a different department.  |
-| 0xEA54D284 | Budget Item: Line               | Uint32 | 2 | 0x6FB01C57,0x6FB01C58 | The line item id(s). Should be a random number that uniquely identifies the line item. |
+| 0xEA54D284 | Budget Item: Line               | Uint32 | 2 | 0x6FB01C57,0x6FB01C58 | The line item id(s). Should be a random number that uniquely identifies the custom budget department line item. |
 | 0xEA54D285 | Budget Item: Purpose            | Uint32 | 2 | 0x87BD3990,0x46261226 | The purpose id(s). In this case the  custom budget department expense id followed by the custom budget department income id.
 | 0xEA54D286 | Budget Item: Cost               | Sint64 | 2 | 0x0000000000000064,0x00000000000000FA | The line item cost(s). In this case the  expense line item followed by the income line item.
-| 0x90222B81 | Budget: Department Budget Group | Uint32 | 2 | 0x0A5A72D1,0x0A5A72D1 | The budget group that the department(s) belong to. In this case both items belong to the 'Business Deals' group |
-| 0x4252085F | Budget: Department Name Key     | Uint32 | 4 | 0x26350A44,0x030F0A4F,0x26350A44,0x030F0A4F | The group and instance ids of the LTEXT file(s) that contain the department name(s). Reps must be a multiple of 2. | 
+| 0x90222B81 | Budget: Custom Department Budget Group | Uint32 | 4 | 0x790651AD,0x0A5A72D1,0x790651AD,0x0A5A72D1 | The department id(s) and the budget group that id belongs to. In this case both items belong to the 'Business Deals' group. Reps must be a multiple of 2. |
+| 0x4252085F | Budget: Custom Department Name Key     | Uint32 | 6 | 0x790651AD,0x26350A44,0x030F0A4F,0x790651AD,0x26350A44,0x030F0A4F | The department id(s) followed by the group and instance ids of the LTEXT file that contain the department name. Reps must be a multiple of 3. | 
 
 
 ## System Requirements

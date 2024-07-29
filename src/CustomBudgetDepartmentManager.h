@@ -35,6 +35,7 @@ public:
 private:
 	enum class CustomBudgetDepartmentItemType : uint32_t
 	{
+		Invalid,
 		Expense,
 		Income
 	};
