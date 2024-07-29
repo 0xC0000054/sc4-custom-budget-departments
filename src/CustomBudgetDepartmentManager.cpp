@@ -193,7 +193,7 @@ namespace
 
 	bool PurposeIdsAreCustomBudgetDepartmentItems(const std::vector<uint32_t>& purposeIds)
 	{
-		if (purposeIds.empty() || purposeIds.size() > 2)
+		if (purposeIds.empty())
 		{
 			return false;
 		}
