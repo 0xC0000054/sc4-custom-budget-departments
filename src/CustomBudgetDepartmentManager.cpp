@@ -363,7 +363,7 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 
 								if (buildingCount > 1)
 								{
-									// If there are two or more building of the same type we tell the game to display the building count
+									// If there are two or more buildings of the same type we tell the game to display the building count
 									// in the UI.
 									// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
 									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
@@ -396,7 +396,7 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 
 								if (buildingCount > 1)
 								{
-									// If there are two or more building of the same type we tell the game to display the building count
+									// If there are two or more buildings of the same type we tell the game to display the building count
 									// in the UI.
 									// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
 									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
@@ -447,7 +447,7 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 								buildingCount--;
 								pLineItem->SetSecondaryInfoField(buildingCount);
 
-								// If there are two or more building of the same type we tell the game to display the building count
+								// If there are two or more buildings of the same type we tell the game to display the building count
 								// in the UI.
 								// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
 								if (buildingCount == 1)
@@ -485,7 +485,7 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 								buildingCount--;
 								pLineItem->SetSecondaryInfoField(buildingCount);
 
-								// If there are two or more building of the same type we tell the game to display the building count
+								// If there are two or more buildings of the same type we tell the game to display the building count
 								// in the UI.
 								// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
 								if (buildingCount == 1)
