@@ -35,6 +35,10 @@
     <ClCompile Include="CustomBudgetDepartmentsDllDirector.cpp" />
     <ClCompile Include="DebugUtil.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="LineItemTransaction.cpp" />
+    <ClCompile Include="PopulationProvider.cpp" />
+    <ClCompile Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.cpp" />
+    <ClCompile Include="transaction-algorithms\TransactionAlgorithmFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\vendor\gzcom-dll\include\cGZPersistResourceKey.h" />
@@ -55,7 +59,14 @@
     <ClInclude Include="..\vendor\gzcom-dll\include\StringResourceManager.h" />
     <ClInclude Include="CustomBudgetDepartmentManager.h" />
     <ClInclude Include="DebugUtil.h" />
+    <ClInclude Include="IPopulationProvider.h" />
+    <ClInclude Include="LineItemTransaction.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="PopulationProvider.h" />
+    <ClInclude Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.h" />
+    <ClInclude Include="transaction-algorithms\ITransactionAlgorithm.h" />
+    <ClInclude Include="transaction-algorithms\TransactionAlgorithmFactory.h" />
+    <ClInclude Include="TransactionAlgorithmStaticPointers.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +123,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\vendor\gzcom-dll\include;..\vendor\EASTL\include;..\vendor\EABase\include\Common;.\;.\public\include;.\child-directors</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\vendor\gzcom-dll\include;..\vendor\EASTL\include;..\vendor\EABase\include\Common;.\;.\public\include;.\child-directors;.\transaction-algorithms</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <UseFullPaths>false</UseFullPaths>
@@ -138,7 +149,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\vendor\gzcom-dll\include;..\vendor\EASTL\include;..\vendor\EABase\include\Common;.\;.\public\include;.\child-directors</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\vendor\gzcom-dll\include;..\vendor\EASTL\include;..\vendor\EABase\include\Common;.\;.\public\include;.\child-directors;.\transaction-algorithms</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>

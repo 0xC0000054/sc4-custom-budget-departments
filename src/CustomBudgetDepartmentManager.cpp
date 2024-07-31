@@ -16,10 +16,14 @@
 #include "cGZPersistResourceKey.h"
 #include "cIGZMessage2Standard.h"
 #include "cIGZMessageServer2.h"
+#include "cIGZPersistDBSegment.h"
 #include "cIGZVariant.h"
 #include "cISC4BudgetSimulator.h"
 #include "cISC4BuildingOccupant.h"
 #include "cISC4City.h"
+#include "cISC4DBSegment.h"
+#include "cISC4DBSegmentIStream.h"
+#include "cISC4DBSegmentOStream.h"
 #include "cISC4DepartmentBudget.h"
 #include "cISC4LineItem.h"
 #include "cISC4Occupant.h"
@@ -30,19 +34,27 @@
 #include "GZServPtrs.h"
 #include "SCPropertyUtil.h"
 #include "StringResourceKey.h"
+#include "TransactionAlgorithmFactory.h"
+#include "TransactionAlgorithmStaticPointers.h"
 #include <array>
 
 static constexpr uint32_t kSC4MessagePostCityInit = 0x26D31EC1;
 static constexpr uint32_t kSC4MessagePostCityShutdown = 0x26D31EC3;
 static constexpr uint32_t kSC4MessageInsertOccupant = 0x99EF1142;
 static constexpr uint32_t kSC4MessageRemoveOccupant = 0x99EF1143;
+static constexpr uint32_t kSC4MessageLoad = 0x26C63341;
+static constexpr uint32_t kSC4MessageSave = 0x26C63344;
+static constexpr uint32_t kSC4MessageSimNewMonth = 0x66956816;
 
-static const std::array<uint32_t, 4> MessageIds =
+static const std::array<uint32_t, 7> MessageIds =
 {
 	kSC4MessagePostCityInit,
 	kSC4MessagePostCityShutdown,
 	kSC4MessageInsertOccupant,
 	kSC4MessageRemoveOccupant,
+	kSC4MessageLoad,
+	kSC4MessageSave,
+	kSC4MessageSimNewMonth,
 };
 
 static constexpr uint32_t kBudgetGroupBusinessDeals = 0xA5A72D1;
@@ -62,9 +74,19 @@ static constexpr uint32_t kBudgetItemCostProperty = 0xEA54D286;
 
 static constexpr uint32_t kCustomBudgetDepartmentBudgetGroupProperty = 0x90222B81;
 static constexpr uint32_t kCustomBudgetDepartmentNameKeyProperty = 0x4252085F;
+static constexpr uint32_t kCustomBudgetLineItemAlgorithm = 0x9EE1240F;
+// See TransactionAlgorithmFactory.cpp for the custom budget line item algorithm
+// tuning property ids, each custom budget line item algorithm that takes tuning
+// parameters has expense and income tuning properties defined for that purpose.
 
 static constexpr uint32_t kCustomBudgetDepartmentExpensePurposeId = 0x87BD3990;
 static constexpr uint32_t kCustomBudgetDepartmentIncomePurposeId = 0x46261226;
+
+static constexpr uint32_t CustomBudgetDepartmentManagerTypeId = 0xFE005706;
+static constexpr uint32_t CustomBudgetDepartmentManagerGroupId = 0xFE005707;
+static constexpr uint32_t CustomBudgetDepartmentManagerInstanceId = 0;
+
+IPopulationProvider* spPopulationProvider;
 
 namespace
 {
@@ -151,7 +173,7 @@ namespace
 		return false;
 	}
 
-	bool GetBudgetDepartmentBudgetGroupProperty(
+	bool GetPropertyValue(
 		const cISCPropertyHolder* pPropertyHolder,
 		uint32_t id,
 		std::unordered_map<uint32_t, uint32_t>& values)
@@ -171,7 +193,6 @@ namespace
 						const uint32_t count = pVariant->GetCount();
 
 						// The values are an array of 2 items each.
-						// The format is: <department id> <department budget group>
 						if (count >= 2 && (count % 2) == 0)
 						{
 							const uint32_t* pData = pVariant->RefUint32();
@@ -233,6 +254,80 @@ namespace
 		return false;
 	}
 
+	bool CreateLineItemTransactionCore(
+		const cISCPropertyHolder* pPropertyHolder,
+		TransactionAlgorithmType type,
+		uint32_t lineNumber,
+		int64_t cost,
+		bool isIncome,
+		std::unordered_map<uint32_t, std::unique_ptr<LineItemTransaction>>& destination)
+	{
+		bool result = false;
+
+		try
+		{
+			destination.emplace(lineNumber, std::make_unique<LineItemTransaction>(pPropertyHolder, type, cost, isIncome));
+			result = true;
+		}
+		catch (const CreateTransactionAlgorithmException& e)
+		{
+			Logger::GetInstance().WriteLine(LogLevel::Error, e.what());
+			result = false;
+		}
+
+		return result;
+	}
+
+	bool CreateLineItemTransaction(
+		const cISCPropertyHolder* pPropertyHolder,
+		uint32_t lineNumber,
+		int64_t cost,
+		bool isIncome,
+		std::unordered_map<uint32_t, std::unique_ptr<LineItemTransaction>>& destination)
+	{
+		bool result = false;
+
+		std::unordered_map<uint32_t, uint32_t> lineItemTransactionAlgorithms;
+
+		if (GetPropertyValue(pPropertyHolder, kCustomBudgetLineItemAlgorithm, lineItemTransactionAlgorithms))
+		{
+			const auto& item = lineItemTransactionAlgorithms.find(lineNumber);
+
+			if (item != lineItemTransactionAlgorithms.end())
+			{
+				result = CreateLineItemTransactionCore(
+					pPropertyHolder,
+					static_cast<TransactionAlgorithmType>(item->second),
+					lineNumber,
+					cost,
+					isIncome,
+					destination);
+			}
+			else
+			{
+				result = CreateLineItemTransactionCore(
+					pPropertyHolder,
+					TransactionAlgorithmType::Fixed,
+					lineNumber,
+					cost,
+					isIncome,
+					destination);
+			}
+		}
+		else
+		{
+			result = CreateLineItemTransactionCore(
+				pPropertyHolder,
+				TransactionAlgorithmType::Fixed,
+				lineNumber,
+				cost,
+				isIncome,
+				destination);
+		}
+
+		return result;
+	}
+
 	bool ContainsCustomBudgetDepartmentPurposeId(const std::vector<uint32_t>& purposeIds)
 	{
 		for (const uint32_t& item : purposeIds)
@@ -245,6 +340,22 @@ namespace
 		}
 
 		return false;
+	}
+
+	LineItemTransaction* GetLineItemTransactionPtr(
+		std::unordered_map<uint32_t, std::unique_ptr<LineItemTransaction>>& collection,
+		uint32_t lineNumber)
+	{
+		LineItemTransaction* result = nullptr;
+
+		const auto& item = collection.find(lineNumber);
+
+		if (item != collection.end())
+		{
+			result = item->second.get();
+		}
+
+		return result;
 	}
 }
 
@@ -265,6 +376,8 @@ bool CustomBudgetDepartmentManager::Init()
 			pMsgServ->AddNotification(this, messageID);
 		}
 	}
+
+	spPopulationProvider = &populationProvider;
 
 	return true;
 }
@@ -337,6 +450,15 @@ bool CustomBudgetDepartmentManager::DoMessage(cIGZMessage2* pMsg)
 	case kSC4MessageRemoveOccupant:
 		RemoveOccupant(pStandardMsg);
 		break;
+	case kSC4MessageLoad:
+		Load(static_cast<cIGZPersistDBSegment*>(pStandardMsg->GetVoid1()));
+		break;
+	case kSC4MessageSave:
+		Save(static_cast<cIGZPersistDBSegment*>(pStandardMsg->GetVoid1()));
+		break;
+	case kSC4MessageSimNewMonth:
+		SimNewMonth();
+		break;
 	}
 
 	return true;
@@ -349,12 +471,15 @@ void CustomBudgetDepartmentManager::PostCityInit(cISC4City* pCity)
 	if (pCity)
 	{
 		pBudgetSim = pCity->GetBudgetSimulator();
+		populationProvider.Init();
 	}
 }
 
 void CustomBudgetDepartmentManager::PostCityShutdown()
 {
 	pBudgetSim = nullptr;
+	populationProvider.Shutdown();
+	customBudgetDepartments.clear();
 }
 
 void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStandardMsg)
@@ -388,22 +513,27 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 
 							if (pLineItem)
 							{
-								// We use the secondary info field to track the number of buildings
-								// of each type in the city.
+								LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
 
-								int64_t buildingCount = pLineItem->GetSecondaryInfoField();
-								buildingCount++;
-								pLineItem->SetSecondaryInfoField(buildingCount);
-
-								// Add the cost of the new building tho the current expenses.
-								pLineItem->AddToFullExpenses(item.cost);
-
-								if (buildingCount > 1)
+								if (pTransaction)
 								{
-									// If there are two or more buildings of the same type we tell the game to display the building count
-									// in the UI.
-									// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
-									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
+									// We use the secondary info field to track the number of buildings
+									// of each type in the city.
+
+									int64_t buildingCount = pLineItem->GetSecondaryInfoField();
+									buildingCount++;
+									pLineItem->SetSecondaryInfoField(buildingCount);
+
+									// Add the cost of the new building tho the current expenses.
+									pLineItem->SetFullExpenses(pTransaction->CalculateLineItemTotal(buildingCount));
+
+									if (buildingCount > 1)
+									{
+										// If there are two or more buildings of the same type we tell the game to display the building count
+										// in the UI.
+										// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
+										pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
+									}
 								}
 							}
 						}
@@ -421,22 +551,27 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 
 							if (pLineItem)
 							{
-								// We use the secondary info field to track the number of buildings
-								// of each type in the city.
+								LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
 
-								int64_t buildingCount = pLineItem->GetSecondaryInfoField();
-								buildingCount++;
-								pLineItem->SetSecondaryInfoField(buildingCount);
-
-								// Add the cost of the new building tho the current income.
-								pLineItem->AddToIncome(item.cost);
-
-								if (buildingCount > 1)
+								if (pTransaction)
 								{
-									// If there are two or more buildings of the same type we tell the game to display the building count
-									// in the UI.
-									// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
-									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
+									// We use the secondary info field to track the number of buildings
+									// of each type in the city.
+
+									int64_t buildingCount = pLineItem->GetSecondaryInfoField();
+									buildingCount++;
+									pLineItem->SetSecondaryInfoField(buildingCount);
+
+									// Add the cost of the new building tho the current income.
+									pLineItem->SetIncome(pTransaction->CalculateLineItemTotal(buildingCount));
+
+									if (buildingCount > 1)
+									{
+										// If there are two or more buildings of the same type we tell the game to display the building count
+										// in the UI.
+										// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
+										pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
+									}
 								}
 							}
 						}
@@ -476,8 +611,18 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 
 							int64_t buildingCount = pLineItem->GetSecondaryInfoField();
 
+							LineItemTransaction* pTransaction = GetLineItemTransaction(item);
+
 							// Subtract the cost of the building from the current expenses.
-							pLineItem->AddToFullExpenses(-item.cost);
+							if (pTransaction)
+							{
+								pLineItem->SetFullExpenses(pTransaction->CalculateLineItemTotal(buildingCount - 1));
+							}
+							else
+							{
+								// Handle buildings that were in the city before the transaction system was introduced.
+								pLineItem->AddToFullExpenses(-item.cost);
+							}
 
 							if (buildingCount > 1)
 							{
@@ -495,6 +640,11 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 							else
 							{
 								pDepartment->RemoveLineItem(item.lineNumber);
+
+								if (pTransaction)
+								{
+									RemoveLineItemTransaction(item);
+								}
 							}
 						}
 					}
@@ -514,8 +664,18 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 
 							int64_t buildingCount = pLineItem->GetSecondaryInfoField();
 
-							// Subtract the cost of the new building tho the current income.
-							pLineItem->AddToIncome(-item.cost);
+							LineItemTransaction* pTransaction = GetLineItemTransaction(item);
+
+							// Subtract the cost of the building from the current income.
+							if (pTransaction)
+							{
+								pLineItem->SetIncome(pTransaction->CalculateLineItemTotal(buildingCount - 1));
+							}
+							else
+							{
+								// Handle buildings that were in the city before the transaction system was introduced.
+								pLineItem->AddToIncome(-item.cost);
+							}
 
 							if (buildingCount > 1)
 							{
@@ -533,10 +693,167 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 							else
 							{
 								pDepartment->RemoveLineItem(item.lineNumber);
+
+								if (pTransaction)
+								{
+									RemoveLineItemTransaction(item);
+								}
 							}
 						}
 					}
 				}
+			}
+		}
+	}
+}
+
+void CustomBudgetDepartmentManager::SimNewMonth()
+{
+	for (auto& department : customBudgetDepartments)
+	{
+		if (!department.second.empty())
+		{
+			cISC4DepartmentBudget* pDepartment = pBudgetSim->GetDepartmentBudget(department.first);
+
+			if (pDepartment)
+			{
+				for (auto& lineItem : department.second)
+				{
+					auto& transaction = lineItem.second;
+
+					// Fixed cost line items don't need to be updated as the cost is set
+					// in the building's exemplar and never changes.
+					if (transaction && !transaction->IsFixedCost())
+					{
+						cISC4LineItem* pLineItem = pDepartment->GetLineItem(lineItem.first);
+
+						if (pLineItem)
+						{
+							int64_t buildingCount = pLineItem->GetSecondaryInfoField();
+							const int64_t newTotal = transaction->CalculateLineItemTotal(buildingCount);
+
+							if (transaction->IsIncome())
+							{
+								pLineItem->SetIncome(newTotal);
+							}
+							else
+							{
+								pLineItem->SetFullExpenses(newTotal);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void CustomBudgetDepartmentManager::Load(cIGZPersistDBSegment* pSegment)
+{
+	if (pSegment)
+	{
+		cRZAutoRefCount<cISC4DBSegment> pSC4DBSegment;
+
+		if (pSegment->QueryInterface(GZIID_cISC4DBSegment, pSC4DBSegment.AsPPVoid()))
+		{
+			cGZPersistResourceKey key(
+				CustomBudgetDepartmentManagerTypeId,
+				CustomBudgetDepartmentManagerGroupId,
+				CustomBudgetDepartmentManagerInstanceId);
+
+			cRZAutoRefCount<cISC4DBSegmentIStream> pStream;
+
+			if (pSC4DBSegment->OpenIStream(key, pStream.AsPPObj()))
+			{
+				ReadFromDBSegment(*pStream);
+			}
+		}
+	}
+}
+
+void CustomBudgetDepartmentManager::Save(cIGZPersistDBSegment* pSegment) const
+{
+	if (pSegment && !customBudgetDepartments.empty())
+	{
+		cRZAutoRefCount<cISC4DBSegment> pSC4DBSegment;
+
+		if (pSegment->QueryInterface(GZIID_cISC4DBSegment, pSC4DBSegment.AsPPVoid()))
+		{
+			cGZPersistResourceKey key(
+				CustomBudgetDepartmentManagerTypeId,
+				CustomBudgetDepartmentManagerGroupId,
+				CustomBudgetDepartmentManagerInstanceId);
+
+			cRZAutoRefCount<cISC4DBSegmentOStream> pStream;
+
+			if (pSC4DBSegment->OpenOStream(key, pStream.AsPPObj(), true))
+			{
+				WriteToDBSegment(*pStream);
+			}
+		}
+	}
+}
+
+void CustomBudgetDepartmentManager::ReadFromDBSegment(cISC4DBSegmentIStream& stream)
+{
+	uint32_t version = 0;
+
+	if (stream.GetUint32(version))
+	{
+		if (version == 1)
+		{
+			uint32_t departmentCount = 0;
+			stream.GetUint32(departmentCount);
+
+			customBudgetDepartments.clear();
+			customBudgetDepartments.reserve(departmentCount);
+
+			for (uint32_t i = 0; i < departmentCount; i++)
+			{
+				uint32_t departmentId = 0;
+				stream.GetUint32(departmentId);
+
+				uint32_t lineItemCount = 0;
+				stream.GetUint32(lineItemCount);
+
+				std::unordered_map<uint32_t, std::unique_ptr<LineItemTransaction>> lineItems;
+				lineItems.reserve(lineItemCount);
+
+				for (uint32_t i = 0; i < lineItemCount; i++)
+				{
+					uint32_t lineItemId = 0;
+					stream.GetUint32(lineItemId);
+
+					std::unique_ptr<LineItemTransaction> transaction = std::make_unique<LineItemTransaction>();
+					transaction->Read(stream);
+
+					lineItems.emplace(lineItemId, std::move(transaction));
+				}
+
+				customBudgetDepartments.emplace(departmentId, std::move(lineItems));
+			}
+		}
+	}
+}
+
+void CustomBudgetDepartmentManager::WriteToDBSegment(cISC4DBSegmentOStream& stream) const
+{
+	if (stream.SetUint32(1))
+	{
+		stream.SetUint32(customBudgetDepartments.size());
+
+		for (const auto& departments : customBudgetDepartments)
+		{
+			stream.SetUint32(departments.first); // department id
+
+			const auto& lineItems = departments.second;
+
+			stream.SetUint32(lineItems.size()); // line item count
+
+			for (const auto& lineItem : lineItems)
+			{
+				stream.SetUint32(lineItem.first); // line item id
+				lineItem.second->Write(stream);   // line item transaction
 			}
 		}
 	}
@@ -622,6 +939,83 @@ cISC4LineItem* CustomBudgetDepartmentManager::GetOrCreateLineItem(
 	return pLineItem;
 }
 
+LineItemTransaction* CustomBudgetDepartmentManager::GetOrCreateLineItemTransaction(
+	const cISCPropertyHolder* pPropertyHolder,
+	const CustomBudgetDepartmentInfo& info)
+{
+	LineItemTransaction* result = nullptr;
+
+	const auto& departmentLineItems = customBudgetDepartments.find(info.department);
+
+	if (departmentLineItems != customBudgetDepartments.end())
+	{
+		result = GetLineItemTransactionPtr(departmentLineItems->second, info.lineNumber);
+
+		if (!result)
+		{
+			if (CreateLineItemTransaction(
+				pPropertyHolder,
+				info.lineNumber,
+				info.cost,
+				info.type == CustomBudgetDepartmentItemType::Income,
+				departmentLineItems->second))
+			{
+				result = GetLineItemTransactionPtr(departmentLineItems->second, info.lineNumber);
+			}
+		}
+	}
+	else
+	{
+		std::unordered_map<uint32_t, std::unique_ptr<LineItemTransaction>> lineItems;
+
+		if (CreateLineItemTransaction(
+			pPropertyHolder,
+			info.lineNumber,
+			info.cost,
+			info.type == CustomBudgetDepartmentItemType::Income,
+			lineItems))
+		{
+			const auto& pair = customBudgetDepartments.try_emplace(info.department, std::move(lineItems));
+
+			result = GetLineItemTransactionPtr(pair.first->second, info.lineNumber);
+		}
+	}
+
+	return result;
+}
+
+LineItemTransaction* CustomBudgetDepartmentManager::GetLineItemTransaction(const CustomBudgetDepartmentInfo& info)
+{
+	LineItemTransaction* result = nullptr;
+
+	const auto& departmentLineItems = customBudgetDepartments.find(info.department);
+
+	if (departmentLineItems != customBudgetDepartments.end())
+	{
+		result = GetLineItemTransactionPtr(departmentLineItems->second, info.lineNumber);
+	}
+
+	return result;
+}
+
+void CustomBudgetDepartmentManager::RemoveLineItemTransaction(const CustomBudgetDepartmentInfo& info)
+{
+	const auto& departmentLineItems = customBudgetDepartments.find(info.department);
+
+	if (departmentLineItems != customBudgetDepartments.end())
+	{
+		auto& lineItems = departmentLineItems->second;
+
+		if (lineItems.erase(info.lineNumber) == 1)
+		{
+			if (lineItems.size() == 0)
+			{
+				customBudgetDepartments.erase(departmentLineItems);
+			}
+		}
+	}
+}
+
 std::vector<CustomBudgetDepartmentManager::CustomBudgetDepartmentInfo> CustomBudgetDepartmentManager::LoadCustomBudgetDepartmentInfo(
 	const cISCPropertyHolder* pPropertyHolder)
 {
@@ -642,7 +1036,7 @@ std::vector<CustomBudgetDepartmentManager::CustomBudgetDepartmentInfo> CustomBud
 			if (GetPropertyValue(pPropertyHolder, kBudgetItemDepartmentProperty, departmentIds)
 				&& GetPropertyValue(pPropertyHolder, kBudgetItemLineProperty, lines)
 				&& GetPropertyValue(pPropertyHolder, kBudgetItemCostProperty, costs)
-				&& GetBudgetDepartmentBudgetGroupProperty(pPropertyHolder, kCustomBudgetDepartmentBudgetGroupProperty, budgetGroups)
+				&& GetPropertyValue(pPropertyHolder, kCustomBudgetDepartmentBudgetGroupProperty, budgetGroups)
 				&& GetBudgetDepartmentNameProperty(pPropertyHolder, kCustomBudgetDepartmentNameKeyProperty, departmentNameKeys))
 			{
 				const size_t budgetDepartmentCount = departmentIds.size();

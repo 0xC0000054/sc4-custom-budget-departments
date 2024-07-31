@@ -5545,6 +5545,19 @@ Types of occupants
     <HELP>
 Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id.
 </HELP>
+  <PROPERTY Name="Budget: Custom Line Item Cost Algorithm" ID="0x9EE1240F" Type="Uint32" ShowAsHex="Y">
+    <HELP>
+The cost algorithm that is used for the line item. The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id.
+</HELP>
+  <PROPERTY Name="Budget Custom Line Item Variable Expense: Res. Total Pop. Factor" ID="0x9EE12410" Type="Float32" ShowAsHex="Y">
+    <HELP>
+Factor applied to the budget item expense based on the total residential population.
+</HELP>
+  </PROPERTY>
+  <PROPERTY Name="Budget Custom Line Item Variable Income: Res. Total Pop. Factor" ID="0x9EE12411" Type="Float32" ShowAsHex="Y">
+    <HELP>
+Factor applied to the budget item income based on the total residential population.
+</HELP>
   </PROPERTY>
   <PROPERTY Name="mnWeeksForCompleteTemperatureSimulation" ID="0xa7607d70" Type="Sint32" Default="1" ShowAsHex="Y">
     <HELP>

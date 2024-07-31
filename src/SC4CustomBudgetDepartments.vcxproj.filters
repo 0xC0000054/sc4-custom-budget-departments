@@ -22,6 +22,12 @@
     <Filter Include="Header Files\GZCOM">
       <UniqueIdentifier>{55969e5e-2491-4049-8687-619fc7c065a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Transaction Algorithms">
+      <UniqueIdentifier>{d6ab56d6-17eb-42b0-9595-ff5d68a8a09a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Transaction Algorithms">
+      <UniqueIdentifier>{456fa0b4-2bbb-4544-98a4-50825a91dc3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\vendor\gzcom-dll\src\cRZBaseString.cpp">
@@ -96,6 +102,18 @@
     <ClCompile Include="CustomBudgetDepartmentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LineItemTransaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.cpp">
+      <Filter>Source Files\Transaction Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="transaction-algorithms\TransactionAlgorithmFactory.cpp">
+      <Filter>Source Files\Transaction Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="PopulationProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="version.h">
@@ -156,6 +174,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CustomBudgetDepartmentManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineItemTransaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.h">
+      <Filter>Header Files\Transaction Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="transaction-algorithms\ITransactionAlgorithm.h">
+      <Filter>Header Files\Transaction Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="transaction-algorithms\TransactionAlgorithmFactory.h">
+      <Filter>Header Files\Transaction Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="PopulationProvider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IPopulationProvider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransactionAlgorithmStaticPointers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

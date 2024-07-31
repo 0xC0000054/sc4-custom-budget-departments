@@ -13,13 +13,19 @@
 
 #pragma once
 #include "cIGZMessageTarget2.h"
+#include "LineItemTransaction.h"
+#include "PopulationProvider.h"
 #include "StringResourceKey.h"
+#include <unordered_map>
 #include <vector>
 
 class cIGZMessage2Standard;
+class cIGZPersistDBSegment;
 class cISC4BudgetSimulator;
 class cISC4BuildingOccupant;
 class cISC4City;
+class cISC4DBSegmentIStream;
+class cISC4DBSegmentOStream;
 class cISC4DepartmentBudget;
 class cISC4LineItem;
 class cISCPropertyHolder;
@@ -85,16 +91,30 @@ private:
 	void PostCityShutdown();
 	void InsertOccupant(cIGZMessage2Standard* pStandardMsg);
 	void RemoveOccupant(cIGZMessage2Standard* pStandardMsg);
+	void SimNewMonth();
+	void Load(cIGZPersistDBSegment* pSegment);
+	void Save(cIGZPersistDBSegment* pSegment) const;
+
+	void ReadFromDBSegment(cISC4DBSegmentIStream& stream);
+	void WriteToDBSegment(cISC4DBSegmentOStream& stream) const;
 
 	cISC4DepartmentBudget* GetOrCreateBudgetDepartment(const CustomBudgetDepartmentInfo& info);
 	cISC4LineItem* GetOrCreateLineItem(
 		cISC4BuildingOccupant* pBuildingOccupant,
 		cISC4DepartmentBudget* pDepartment,
 		const CustomBudgetDepartmentInfo& info);
+	LineItemTransaction* GetOrCreateLineItemTransaction(
+		const cISCPropertyHolder* pPropertyHolder,
+		const CustomBudgetDepartmentInfo& info);
+
+	LineItemTransaction* GetLineItemTransaction(const CustomBudgetDepartmentInfo& info);
+	void RemoveLineItemTransaction(const CustomBudgetDepartmentInfo& info);
 
 	std::vector<CustomBudgetDepartmentInfo> LoadCustomBudgetDepartmentInfo(const cISCPropertyHolder* pPropertyHolder);
 
 	uint32_t refCount;
 	cISC4BudgetSimulator* pBudgetSim;
+	std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::unique_ptr<LineItemTransaction>>> customBudgetDepartments;
+	PopulationProvider populationProvider;
 };
 

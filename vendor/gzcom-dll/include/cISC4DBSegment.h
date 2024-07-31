@@ -7,6 +7,8 @@ class cISC4COMSerializer;
 class cISC4DBSegmentIStream;
 class cISC4DBSegmentOStream;
 
+static const uint32_t GZIID_cISC4DBSegment = 0x499899da;
+
 class cISC4DBSegment : public cIGZUnknown
 {
 public:
@@ -19,7 +21,7 @@ public:
 
 	virtual bool LoadClassObjects() = 0;
 
-	virtual bool OpenOStream(cGZPersistResourceKey const& key, cISC4DBSegmentOStream** ppStream, bool bUnknown) = 0;
+	virtual bool OpenOStream(cGZPersistResourceKey const& key, cISC4DBSegmentOStream** ppStream, bool truncate) = 0;
 	virtual void CloseOStream(cISC4DBSegmentOStream* pStream) = 0;
 
 	virtual bool SaveClassObjects() = 0;
