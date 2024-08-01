@@ -14,10 +14,6 @@
 #include "ResidentialTotalPopulationAlgorithm.h"
 #include "cIGZIStream.h"
 #include "cIGZOStream.h"
-#include "cISC4App.h"
-#include "cISC4City.h"
-#include "cISC4ResidentialSimulator.h"
-#include "GZServPtrs.h"
 #include "TransactionAlgorithmStaticPointers.h"
 
 ResidentialTotalPopulationAlgorithm::ResidentialTotalPopulationAlgorithm()
