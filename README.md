@@ -59,7 +59,7 @@ This example shows part of a building exemplar with a custom department that has
 | 0x90222B81 | Budget: Custom Department Budget Group | Uint32 | 4 | 0x790651AD,0x0A5A72D1,0x790651AD,0x0A5A72D1 | The department id(s) and the budget group that id belongs to. In this case both items belong to the 'Business Deals' group. Reps must be a multiple of 2. |
 | 0x4252085F | Budget: Custom Department Name Key     | Uint32 | 6 | 0x790651AD,0x26350A44,0x030F0A4F,0x790651AD,0x26350A44,0x030F0A4F | The department id(s) followed by the group and instance ids of the LTEXT file that contain the department name. Reps must be a multiple of 3. | 
 | 0x9EE1240F | Budget: Custom Line Item Cost Algorithm | Uint32 | 4 | 0x6FB01C57,0x00000000,0x6FB01C58,0x00000001 | The line item id(s) followed by the line item algorithm id. In this case, a fixed cost expense item and a variable income item.  Reps must be a multiple of 2. |
-| 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | 0 | 0.002 | The factor that is applied to the budge item income/expense based on the city population. In this case, ง2 in additional income for every 1,000 city residents.|
+| 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | 0 | 0.002 | The factor that is applied to the budge item income/expense based on the city population. In this case, ยง2 in additional income for every 1,000 city residents.|
 
 
 ## System Requirements
