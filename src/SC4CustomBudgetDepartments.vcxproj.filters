@@ -197,6 +197,9 @@
     <ClInclude Include="TransactionAlgorithmStaticPointers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="transaction-algorithms\TransactionAlgorithmType.h">
+      <Filter>Header Files\Transaction Algorithms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

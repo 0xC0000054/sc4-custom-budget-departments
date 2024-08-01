@@ -66,6 +66,7 @@
     <ClInclude Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.h" />
     <ClInclude Include="transaction-algorithms\ITransactionAlgorithm.h" />
     <ClInclude Include="transaction-algorithms\TransactionAlgorithmFactory.h" />
+    <ClInclude Include="transaction-algorithms\TransactionAlgorithmType.h" />
     <ClInclude Include="TransactionAlgorithmStaticPointers.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>

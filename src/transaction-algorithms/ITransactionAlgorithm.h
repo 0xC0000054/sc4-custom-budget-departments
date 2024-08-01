@@ -12,16 +12,10 @@
 ////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include <cstdint>
+#include "TransactionAlgorithmType.h"
 
 class cIGZIStream;
 class cIGZOStream;
-
-enum class TransactionAlgorithmType : uint32_t
-{
-	Fixed = 0,
-	ResidentialTotalPopulation = 1,
-};
 
 class ITransactionAlgorithm
 {
