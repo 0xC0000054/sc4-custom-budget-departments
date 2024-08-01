@@ -114,6 +114,9 @@
     <ClCompile Include="PopulationProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="transaction-algorithms\ResidentialWealthGroupPopulationAlgorithm.cpp">
+      <Filter>Source Files\Transaction Algorithms</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="version.h">
@@ -198,6 +201,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="transaction-algorithms\TransactionAlgorithmType.h">
+      <Filter>Header Files\Transaction Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="transaction-algorithms\ResidentialWealthGroupPopulationAlgorithm.h">
       <Filter>Header Files\Transaction Algorithms</Filter>
     </ClInclude>
   </ItemGroup>

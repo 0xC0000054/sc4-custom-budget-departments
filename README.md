@@ -36,11 +36,14 @@ Each property supports multiple values.
 |--------------------------|-------------|
 | 0x00000000 | Fixed | The item has a fixed expense/income, as specified by the `Budget Item: Cost` property. |
 | 0x00000001 | Variable City Residential Total Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based a factor of the city's total residential population. Uses the `Budget Custom Line Item Variable Expense: Res. Total Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Total Pop. Factor` property. |
+| 0x00000002 | Variable City Residential Wealth Groups Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors of the city's residential population by wealth group. Uses the `Budget Custom Line Item Variable Expense: Res. Wealth Group Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Wealth Group Pop. Factor` property. |
 
 | Custom Line Item Cost Algorithm Factor Property ID | Property Name | Type | Description |
 |----------------------------------------------------|---------------|------|-------------|
-| 0x9EE12410 | Budget Custom Line Item Variable Expense: Res. Total Pop. Factor | Float32 | One float32 value that represents the factor applied to the budget item expense based on the total residential population.
-| 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | One float32 value that represents the factor applied to the budget item income based on the total residential population.
+| 0x9EE12410 | Budget Custom Line Item Variable Expense: Res. Total Pop. Factor | Float32 | Factor applied to the budget item expense based on the total residential population. The format is one Float32 value.
+| 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | Factor applied to the budget item income based on the total residential population. The format is one Float32 value.
+| 0x9EE12412 | Budget Custom Line Item Variable Expense: Res. Wealth Groups Pop. Factor | Float32 | Factor applied to the budget item expense based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
+| 0x9EE12413 | Budget Custom Line Item Variable Income: Res. Wealth Groups Pop. Factor | Float32 | Factor applied to the budget item income based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
 
 
 ### Example Building Exemplar Properties

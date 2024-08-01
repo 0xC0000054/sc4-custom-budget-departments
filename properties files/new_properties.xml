@@ -5551,12 +5551,22 @@ The cost algorithm that is used for the line item. The format is a group of 2 UI
 </HELP>
   <PROPERTY Name="Budget Custom Line Item Variable Expense: Res. Total Pop. Factor" ID="0x9EE12410" Type="Float32" ShowAsHex="Y">
     <HELP>
-Factor applied to the budget item expense based on the total residential population.
+Factor applied to the budget item expense based on the total residential population. The format is one Float32 value.
 </HELP>
   </PROPERTY>
   <PROPERTY Name="Budget Custom Line Item Variable Income: Res. Total Pop. Factor" ID="0x9EE12411" Type="Float32" ShowAsHex="Y">
     <HELP>
-Factor applied to the budget item income based on the total residential population.
+Factor applied to the budget item income based on the total residential population. The format is one Float32 value.
+</HELP>
+  </PROPERTY>
+    <PROPERTY Name="Budget Custom Line Item Variable Expense: Res. Wealth Group Pop. Factor" ID="0x9EE12412" Type="Float32" Count="3" ShowAsHex="Y">
+    <HELP>
+Factor applied to the budget item expense based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
+</HELP>
+  </PROPERTY>
+  <PROPERTY Name="Budget Custom Line Item Variable Income: Res. Wealth Group Pop. Factor" ID="0x9EE12413" Type="Float32" Count="3" ShowAsHex="Y">
+    <HELP>
+Factor applied to the budget item income based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
 </HELP>
   </PROPERTY>
   <PROPERTY Name="mnWeeksForCompleteTemperatureSimulation" ID="0xa7607d70" Type="Sint32" Default="1" ShowAsHex="Y">

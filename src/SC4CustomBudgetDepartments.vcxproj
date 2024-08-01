@@ -38,6 +38,7 @@
     <ClCompile Include="LineItemTransaction.cpp" />
     <ClCompile Include="PopulationProvider.cpp" />
     <ClCompile Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.cpp" />
+    <ClCompile Include="transaction-algorithms\ResidentialWealthGroupPopulationAlgorithm.cpp" />
     <ClCompile Include="transaction-algorithms\TransactionAlgorithmFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +66,7 @@
     <ClInclude Include="PopulationProvider.h" />
     <ClInclude Include="transaction-algorithms\ResidentialTotalPopulationAlgorithm.h" />
     <ClInclude Include="transaction-algorithms\ITransactionAlgorithm.h" />
+    <ClInclude Include="transaction-algorithms\ResidentialWealthGroupPopulationAlgorithm.h" />
     <ClInclude Include="transaction-algorithms\TransactionAlgorithmFactory.h" />
     <ClInclude Include="transaction-algorithms\TransactionAlgorithmType.h" />
     <ClInclude Include="TransactionAlgorithmStaticPointers.h" />

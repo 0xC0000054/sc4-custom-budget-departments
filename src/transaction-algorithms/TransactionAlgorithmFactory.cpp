@@ -16,9 +16,14 @@
 #include "cISCProperty.h"
 #include "cISCPropertyHolder.h"
 #include "ResidentialTotalPopulationAlgorithm.h"
+#include "ResidentialWealthGroupPopulationAlgorithm.h"
+
+#include <vector>
 
 static constexpr uint32_t ResidentialTotalPopulationExpenseFactorPropertyId = 0x9EE12410;
 static constexpr uint32_t ResidentialTotalPopulationIncomeFactorPropertyId = 0x9EE12411;
+static constexpr uint32_t ResidentialWealthGroupPopulationExpenseFactorPropertyId = 0x9EE12412;
+static constexpr uint32_t ResidentialWealthGroupPopulationIncomeFactorPropertyId = 0x9EE12413;
 
 namespace
 {
@@ -51,6 +56,41 @@ namespace
 
 		return false;
 	}
+
+	bool GetPropertyValue(const cISCPropertyHolder* pPropertyHolder, uint32_t id, std::vector<float>& values)
+	{
+		if (pPropertyHolder)
+		{
+			const cISCProperty* property = pPropertyHolder->GetProperty(id);
+
+			if (property)
+			{
+				const cIGZVariant* pVariant = property->GetPropertyValue();
+
+				if (pVariant)
+				{
+					const uint16_t type = pVariant->GetType();
+
+					if (type == cIGZVariant::Type::Float32Array)
+					{
+						const uint32_t count = pVariant->GetCount();
+						const float* pData = pVariant->RefFloat32();
+
+						values.reserve(count);
+
+						for (uint32_t i = 0; i < count; i++)
+						{
+							values.push_back(pData[i]);
+						}
+
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
 }
 
 std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(TransactionAlgorithmType type)
@@ -62,6 +102,8 @@ std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(Trans
 		return std::unique_ptr<ITransactionAlgorithm>();
 	case TransactionAlgorithmType::ResidentialTotalPopulation:
 		return std::make_unique<ResidentialTotalPopulationAlgorithm>();
+	case TransactionAlgorithmType::ResidentialWealthGroupPopulation:
+		return std::make_unique<ResidentialWealthGroupPopulationAlgorithm>();
 	default:
 		throw CreateTransactionAlgorithmException("Unknown TransactionAlgorithmType value.");
 	}
@@ -88,6 +130,25 @@ std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(
 		}
 
 		algorithm = std::make_unique<ResidentialTotalPopulationAlgorithm>(factor);
+	}
+	else if (type == TransactionAlgorithmType::ResidentialWealthGroupPopulation)
+	{
+		std::vector<float> values;
+
+		if (!GetPropertyValue(
+			pPropertyHolder,
+			isIncome ? ResidentialWealthGroupPopulationIncomeFactorPropertyId : ResidentialWealthGroupPopulationExpenseFactorPropertyId,
+			values))
+		{
+			throw CreateTransactionAlgorithmException("Failed to get the ResidentialWealthGroupPopulation property value.");
+		}
+
+		if (values.size() != 3)
+		{
+			throw CreateTransactionAlgorithmException("The ResidentialWealthGroupPopulation property must have 3 Float32 values.");
+		}
+
+		algorithm = std::make_unique<ResidentialWealthGroupPopulationAlgorithm>(values[0], values[1], values[2]);
 	}
 
 	return algorithm;
