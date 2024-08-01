@@ -33,7 +33,7 @@ Each property supports multiple values.
 | 0x4A357EAF | Utilities |
 
 | Custom Line Item Cost Algorithm ID | Name | Description |
-|--------------------------|-------------|
+|--------------------------|------|------|
 | 0x00000000 | Fixed | The item has a fixed expense/income, as specified by the `Budget Item: Cost` property. |
 | 0x00000001 | Variable City Residential Total Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based a factor of the city's total residential population. Uses the `Budget Custom Line Item Variable Expense: Res. Total Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Total Pop. Factor` property. |
 | 0x00000002 | Variable City Residential Wealth Groups Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors of the city's residential population by wealth group. Uses the `Budget Custom Line Item Variable Expense: Res. Wealth Group Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Wealth Group Pop. Factor` property. |
