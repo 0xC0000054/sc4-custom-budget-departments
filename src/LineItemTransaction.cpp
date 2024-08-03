@@ -52,7 +52,7 @@ LineItemTransaction::LineItemTransaction(
 	int64_t perBuildingFixedCashFlow,
 	uint32_t lineNumber,
 	bool isIncome)
-	: algorithm(TransactionAlgorithmFactory::Create(pPropertyHolder, type, lineNumber, isIncome)),
+	: algorithm(TransactionAlgorithmFactory::Create(pPropertyHolder, type, lineNumber)),
 	  perBuildingFixedCashFlow(perBuildingFixedCashFlow),
 	  isIncome(isIncome)
 {

@@ -23,11 +23,9 @@
 #include <cstdarg>
 #include <vector>
 
-static constexpr uint32_t ResidentialTotalPopulationExpenseFactorPropertyId = 0x9EE12410;
-static constexpr uint32_t ResidentialTotalPopulationIncomeFactorPropertyId = 0x9EE12411;
-static constexpr uint32_t ResidentialWealthGroupPopulationExpenseFactorPropertyId = 0x9EE12412;
-static constexpr uint32_t ResidentialWealthGroupPopulationIncomeFactorPropertyId = 0x9EE12413;
-static constexpr uint32_t ResidentialTourismPopulationFactorsPropertyId = 0x9EE12414;
+static constexpr uint32_t ResidentialTotalPopulationFactorPropertyId = 0x9EE12410;
+static constexpr uint32_t ResidentialWealthGroupPopulationFactorsPropertyId = 0x9EE12411;
+static constexpr uint32_t ResidentialTourismPopulationFactorsPropertyId = 0x9EE12412;
 
 namespace
 {
@@ -70,71 +68,6 @@ namespace
 				throw CreateTransactionAlgorithmException(buffer);
 			}
 		}
-	}
-
-	bool GetPropertyValue(const cISCPropertyHolder* pPropertyHolder, uint32_t id, float& value)
-	{
-		if (pPropertyHolder)
-		{
-			const cISCProperty* property = pPropertyHolder->GetProperty(id);
-
-			if (property)
-			{
-				const cIGZVariant* pVariant = property->GetPropertyValue();
-
-				if (pVariant)
-				{
-					const uint16_t type = pVariant->GetType();
-
-					if (type == cIGZVariant::Type::Float32)
-					{
-						return pVariant->GetValFloat32(value);
-					}
-					else if (type == cIGZVariant::Type::Float32Array && pVariant->GetCount() == 1)
-					{
-						value = *pVariant->RefFloat32();
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
-	}
-
-	bool GetPropertyValue(const cISCPropertyHolder* pPropertyHolder, uint32_t id, std::vector<float>& values)
-	{
-		if (pPropertyHolder)
-		{
-			const cISCProperty* property = pPropertyHolder->GetProperty(id);
-
-			if (property)
-			{
-				const cIGZVariant* pVariant = property->GetPropertyValue();
-
-				if (pVariant)
-				{
-					const uint16_t type = pVariant->GetType();
-
-					if (type == cIGZVariant::Type::Float32Array)
-					{
-						const uint32_t count = pVariant->GetCount();
-						const float* pData = pVariant->RefFloat32();
-
-						values.reserve(count);
-
-						for (uint32_t i = 0; i < count; i++)
-						{
-							values.push_back(pData[i]);
-						}
-
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
 	}
 
 	size_t FindLineItemDataStartIndex(
@@ -297,44 +230,63 @@ std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(Trans
 std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(
 	const cISCPropertyHolder* pPropertyHolder,
 	TransactionAlgorithmType type,
-	uint32_t lineNumber,
-	bool isIncome)
+	uint32_t lineNumber)
 {
 	std::unique_ptr<ITransactionAlgorithm> algorithm;
 	// The Fixed algorithm type is represented by a null ITransactionAlgorithm.
 
 	if (type == TransactionAlgorithmType::ResidentialTotalPopulation)
 	{
-		float factor = 0.0f;
-
-		if (!GetPropertyValue(
+		std::vector<int64_t> lineItemData = GetLineItemData(
 			pPropertyHolder,
-			isIncome ? ResidentialTotalPopulationIncomeFactorPropertyId : ResidentialTotalPopulationExpenseFactorPropertyId,
-			factor))
-		{
-			throw CreateTransactionAlgorithmException("Failed to get the ResidentialTotalPopulation property value.");
-		}
+			ResidentialTotalPopulationFactorPropertyId,
+			lineNumber,
+			3,
+			"ResidentialTotalPopulation");
+
+		float factor = Rational64ToFloat(
+			lineItemData[0],
+			lineItemData[1],
+			"ResidentialTotalPopulation",
+			"total population",
+			lineNumber);
 
 		algorithm = std::make_unique<ResidentialTotalPopulationAlgorithm>(factor);
 	}
 	else if (type == TransactionAlgorithmType::ResidentialWealthGroupPopulation)
 	{
-		std::vector<float> values;
-
-		if (!GetPropertyValue(
+		std::vector<int64_t> lineItemData = GetLineItemData(
 			pPropertyHolder,
-			isIncome ? ResidentialWealthGroupPopulationIncomeFactorPropertyId : ResidentialWealthGroupPopulationExpenseFactorPropertyId,
-			values))
-		{
-			throw CreateTransactionAlgorithmException("Failed to get the ResidentialWealthGroupPopulation property value.");
-		}
+			ResidentialWealthGroupPopulationFactorsPropertyId,
+			lineNumber,
+			7,
+			"ResidentialWealthGroupPopulation");
 
-		if (values.size() != 3)
-		{
-			throw CreateTransactionAlgorithmException("The ResidentialWealthGroupPopulation property must have 3 Float32 values.");
-		}
+		float lowWealthFactor = Rational64ToFloat(
+			lineItemData[0],
+			lineItemData[1],
+			"ResidentialWealthGroupPopulation",
+			"low wealth",
+			lineNumber);
 
-		algorithm = std::make_unique<ResidentialWealthGroupPopulationAlgorithm>(values[0], values[1], values[2]);
+		float mediumWealthFactor = Rational64ToFloat(
+			lineItemData[2],
+			lineItemData[3],
+			"ResidentialWealthGroupPopulation",
+			"medium wealth",
+			lineNumber);
+
+		float highWealthFactor = Rational64ToFloat(
+			lineItemData[4],
+			lineItemData[5],
+			"ResidentialWealthGroupPopulation",
+			"high wealth",
+			lineNumber);
+
+		algorithm = std::make_unique<ResidentialWealthGroupPopulationAlgorithm>(
+			lowWealthFactor,
+			mediumWealthFactor,
+			highWealthFactor);
 	}
 	else if (type == TransactionAlgorithmType::Tourism)
 	{

@@ -37,6 +37,5 @@ namespace TransactionAlgorithmFactory
 	std::unique_ptr<ITransactionAlgorithm> Create(
 		const cISCPropertyHolder* pPropertyHolder,
 		TransactionAlgorithmType type,
-		uint32_t lineNumber,
-		bool isIncome);
+		uint32_t lineNumber);
 }

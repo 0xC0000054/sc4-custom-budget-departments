@@ -5549,25 +5549,16 @@ Controls which budget window the custom budget department is grouped under. The 
     <HELP>
 The cost algorithm that is used for the line item. The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id.
 </HELP>
-  <PROPERTY Name="Budget Custom Line Item Variable Expense: Res. Total Pop. Factor" ID="0x9EE12410" Type="Float32" ShowAsHex="Y">
+  <PROPERTY Name="Budget Custom Line Item Variable Expense/Income: Res. Total Pop." ID="0x9EE12410" Type="Sint64" ShowAsHex="Y">
     <HELP>
-Factor applied to the budget item expense based on the total residential population. The format is one Float32 value.
+Factor applied to the budget item expense based on the total residential population. The format is a group of 3 Sint64 values representing the line item id followed by the numerator and denominator for the total residential population factor.
 </HELP>
   </PROPERTY>
-  <PROPERTY Name="Budget Custom Line Item Variable Income: Res. Total Pop. Factor" ID="0x9EE12411" Type="Float32" ShowAsHex="Y">
+  <PROPERTY Name="Budget Custom Line Item Variable Expense/Income: Res. Wealth Group Pop." ID="0x9EE12411" Type="Sint64" ShowAsHex="Y">
     <HELP>
-Factor applied to the budget item income based on the total residential population. The format is one Float32 value.
+Factor applied to the budget item expense based on the residential wealth group populations. The format is a group of 7 Sint64 values representing the line item id followed by the numerators and denominators for the low, medium, and high wealth group factors.
 </HELP>
   </PROPERTY>
-    <PROPERTY Name="Budget Custom Line Item Variable Expense: Res. Wealth Group Pop. Factor" ID="0x9EE12412" Type="Float32" Count="3" ShowAsHex="Y">
-    <HELP>
-Factor applied to the budget item expense based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
-</HELP>
-  </PROPERTY>
-  <PROPERTY Name="Budget Custom Line Item Variable Income: Res. Wealth Group Pop. Factor" ID="0x9EE12413" Type="Float32" Count="3" ShowAsHex="Y">
-    <HELP>
-Factor applied to the budget item income based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
-</HELP>
   <PROPERTY Name="Budget Custom Line Item Variable Expense/Income: Tourism" ID="0x9EE12414" Type="Sint64" ShowAsHex="Y">
     <HELP>
 Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator for the national and international tourism factor and a Sint64 geopolitical factor.

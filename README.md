@@ -41,19 +41,17 @@ Each property supports multiple values.
 | Custom Line Item Cost Algorithm ID | Name | Description |
 |--------------------------|------|------|
 | 0x00000000 | Fixed | The item has a fixed expense/income, as specified by the `Budget Item: Cost` property. |
-| 0x00000001 | Variable City Residential Total Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based a factor of the city's total residential population. Uses the `Budget Custom Line Item Variable Expense: Res. Total Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Total Pop. Factor` property. |
-| 0x00000002 | Variable City Residential Wealth Groups Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors of the city's residential population by wealth group. Uses the `Budget Custom Line Item Variable Expense: Res. Wealth Group Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Wealth Group Pop. Factor` property. |
+| 0x00000001 | Variable City Residential Total Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based a factor of the city's total residential population. Uses the `Budget Custom Line Item Variable Expense/Income: Res. Total Pop.` property. |
+| 0x00000002 | Variable City Residential Wealth Groups Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors of the city's residential population by wealth group. Uses the `Budget Custom Line Item Variable Expense/Income: Res. Wealth Group Pop.` property. |
 | 0x00000003 | Variable Tourism | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors related to an approximation of local/regional tourism. Uses the `Budget Custom Line Item Variable Expense/Income: Tourism`. |
 
 #### Custom Line Item Cost Algorithm Tuning Properties
 
 | Custom Line Item Cost Algorithm Tuning Property ID | Property Name | Type | Description |
 |----------------------------------------------------|---------------|------|-------------|
-| 0x9EE12410 | Budget Custom Line Item Variable Expense: Res. Total Pop. Factor | Float32 | Factor applied to the budget item expense based on the total residential population. The format is one Float32 value.
-| 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | Factor applied to the budget item income based on the total residential population. The format is one Float32 value.
-| 0x9EE12412 | Budget Custom Line Item Variable Expense: Res. Wealth Groups Pop. Factor | Float32 | Factor applied to the budget item expense based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
-| 0x9EE12413 | Budget Custom Line Item Variable Income: Res. Wealth Groups Pop. Factor | Float32 | Factor applied to the budget item income based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
-| 0x9EE12414 | Budget Custom Line Item Variable Expense/Income: Tourism | Sint64 | Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator for the national and international tourism factor and a Sint64 geopolitical factor. |
+| 0x9EE12410 | Budget Custom Line Item Variable Expense/Income: Res. Total Pop. | Sint64 | Factor applied to the budget item expense/income based on the total residential population. The format is a group of 3 Sint64 values representing the line item id followed by the numerator and denominator for the total residential population factor. |
+| 0x9EE12411 | Budget Custom Line Item Variable Expense/Income: Res. Wealth Groups Pop. | Sint64 | Factor applied to the budget item expense/income based on the residential wealth group populations. The format is a group of 7 Sint64 values representing the line item id followed by the numerators and denominators for the low, medium, and high wealth group factors. |
+| 0x9EE12412 | Budget Custom Line Item Variable Expense/Income: Tourism | Sint64 | Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator for the national and international tourism factor and a Sint64 geopolitical factor. |
 
 ##### Tourism Algorithm Details
 
@@ -84,7 +82,7 @@ This example shows part of a building exemplar with a custom department that has
 | 0x90222B81 | Budget: Custom Department Budget Group | Uint32 | 4 | 0x790651AD,0x0A5A72D1,0x790651AD,0x0A5A72D1 | The department id(s) and the budget group that id belongs to. In this case both items belong to the 'Business Deals' group. Reps must be a multiple of 2. |
 | 0x4252085F | Budget: Custom Department Name Key     | Uint32 | 6 | 0x790651AD,0x26350A44,0x030F0A4F,0x790651AD,0x26350A44,0x030F0A4F | The department id(s) followed by the group and instance ids of the LTEXT file that contain the department name. Reps must be a multiple of 3. | 
 | 0x9EE1240F | Budget: Custom Line Item Cost Algorithm | Uint32 | 4 | 0x6FB01C57,0x00000000,0x6FB01C58,0x00000001 | The line item id(s) followed by the line item algorithm id. In this case, a fixed cost expense item and a variable income item.  Reps must be a multiple of 2. |
-| 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | 0 | 0.002 | The factor that is applied to the budge item income/expense based on the city population. In this case, §2 in additional income for every 1,000 city residents.|
+| 0x9EE12410 | Budget Custom Line Item Variable Expense/Income: Res. Total Pop. | Sint64 | 3 | 0x000000006FB01C58,0x0000000000000002,0x00000000000003E8 | The factor that is applied to the budge item income/expense based on the city population. In this case, §2 in additional income for every 1,000 city residents.|
 
 
 ## System Requirements
