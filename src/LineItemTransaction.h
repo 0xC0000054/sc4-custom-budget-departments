@@ -25,6 +25,7 @@ public:
 		const cISCPropertyHolder* pPropertyHolder,
 		TransactionAlgorithmType type,
 		int64_t perBuildingFixedCashFlow,
+		uint32_t lineNumber,
 		bool isIncome);
 
 	LineItemTransaction(const LineItemTransaction&) = delete;

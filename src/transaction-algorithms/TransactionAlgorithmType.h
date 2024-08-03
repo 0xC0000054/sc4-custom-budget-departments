@@ -19,4 +19,5 @@ enum class TransactionAlgorithmType : uint32_t
 	Fixed = 0,
 	ResidentialTotalPopulation = 1,
 	ResidentialWealthGroupPopulation = 2,
+	Tourism = 3,
 };

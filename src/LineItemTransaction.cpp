@@ -50,8 +50,9 @@ LineItemTransaction::LineItemTransaction(
 	const cISCPropertyHolder* pPropertyHolder,
 	TransactionAlgorithmType type,
 	int64_t perBuildingFixedCashFlow,
+	uint32_t lineNumber,
 	bool isIncome)
-	: algorithm(TransactionAlgorithmFactory::Create(pPropertyHolder, type, isIncome)),
+	: algorithm(TransactionAlgorithmFactory::Create(pPropertyHolder, type, lineNumber, isIncome)),
 	  perBuildingFixedCashFlow(perBuildingFixedCashFlow),
 	  isIncome(isIncome)
 {

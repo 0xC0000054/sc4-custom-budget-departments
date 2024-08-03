@@ -12,15 +12,19 @@ Each property supports multiple values.
 
 ### Property Tables
 
+#### Main Budget Department Properties
+
 | Property ID | Property Name | Type | Description   |
 |-------------|---------------|------|--------------------------
 | 0xEA54D283  | Budget Item: Department | Uint32 | Used to set the budget department id(s). For new departments it should be a random IID value. |
 | 0xEA54D284  | Budget Item: Line | Uint32 | Used to set the budget department line items for the building. It should be a random IID value for each custom budget department line item. |
 | 0xEA54D285  | Budget Item: Purpose | Uint32 | Set to `0x87BD3990` for an expense line item or `0x46261226` for an income line item. |
 | 0xEA54D286  | Budget Item: Cost | Sint64 | Cost(s) of each line item. |
-| 0x90222B81  | Budget: Custom Department Budget Group | Uint32 | Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id. See the Budget Groups table below. |
+| 0x90222B81  | Budget: Custom Department Budget Group | Uint32 | Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id. See the `Budget Groups` table below. |
 | 0x4252085F  | Budget: Custom Department Name Key | Uint32 | Specifies the name key for a custom budget department. The format is a group of 3 Uint32 values, consisting of the department id followed by the group and instance ids of the LTEXT file. |
 | 0x9EE1240F  | Budget: Custom Line Item Cost Algorithm | Uint32 | An optional property to configure the cost algorithm that is used for the line item(s). The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id. If the property is not present, the `Fixed` cost algorithm will be used. See the `Custom Line Item Cost Algorithm` below. |
+
+#### Budget Groups
 
 | Budget Group ID | Budget Window |
 |-----------------|-------------|
@@ -32,19 +36,40 @@ Each property supports multiple values.
 | 0xAA369059 | Transportation |
 | 0x4A357EAF | Utilities |
 
+####  Custom Line Item Cost Algorithm
+
 | Custom Line Item Cost Algorithm ID | Name | Description |
 |--------------------------|------|------|
 | 0x00000000 | Fixed | The item has a fixed expense/income, as specified by the `Budget Item: Cost` property. |
 | 0x00000001 | Variable City Residential Total Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based a factor of the city's total residential population. Uses the `Budget Custom Line Item Variable Expense: Res. Total Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Total Pop. Factor` property. |
 | 0x00000002 | Variable City Residential Wealth Groups Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors of the city's residential population by wealth group. Uses the `Budget Custom Line Item Variable Expense: Res. Wealth Group Pop. Factor` and/or `Budget Custom Line Item Variable Income: Res. Wealth Group Pop. Factor` property. |
+| 0x00000003 | Variable Tourism | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors related to an approximation of local/regional tourism. Uses the `Budget Custom Line Item Variable Expense/Income: Tourism`. |
 
-| Custom Line Item Cost Algorithm Factor Property ID | Property Name | Type | Description |
+#### Custom Line Item Cost Algorithm Tuning Properties
+
+| Custom Line Item Cost Algorithm Tuning Property ID | Property Name | Type | Description |
 |----------------------------------------------------|---------------|------|-------------|
 | 0x9EE12410 | Budget Custom Line Item Variable Expense: Res. Total Pop. Factor | Float32 | Factor applied to the budget item expense based on the total residential population. The format is one Float32 value.
 | 0x9EE12411 | Budget Custom Line Item Variable Income: Res. Total Pop. Factor | Float32 | Factor applied to the budget item income based on the total residential population. The format is one Float32 value.
 | 0x9EE12412 | Budget Custom Line Item Variable Expense: Res. Wealth Groups Pop. Factor | Float32 | Factor applied to the budget item expense based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
 | 0x9EE12413 | Budget Custom Line Item Variable Income: Res. Wealth Groups Pop. Factor | Float32 | Factor applied to the budget item income based on the residential wealth group populations. The format is three Float32 values representing the low, medium, and high wealth groups.
+| 0x9EE12414 | Budget Custom Line Item Variable Expense/Income: Tourism | Sint64 | Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator for the national and international tourism factor and a Sint64 geopolitical factor. |
 
+##### Tourism Algorithm Details
+
+The tourism algorithm uses the city and regional residential populations to approximate local/regional tourism mechanic. The algorithm is described below:
+```
+x = Low Wealth Population City
+y = Medium Wealth Population City
+z = High Wealth Population City
+j = Low Wealth Population Region
+k = Medium Wealth Population Region
+l = High Wealth Population Region
+p = Geopolitics Factor
+d = National & International Tourism factor
+
+Variable Income = [x + y + z + (j * d) + (k * d) + (l * d)] / p
+```
 
 ### Example Building Exemplar Properties
 

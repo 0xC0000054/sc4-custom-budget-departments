@@ -24,6 +24,10 @@ public:
 	CreateTransactionAlgorithmException(const char* const message) : std::runtime_error(message)
 	{
 	}
+
+	CreateTransactionAlgorithmException(const std::string& message) : std::runtime_error(message)
+	{
+	}
 };
 
 namespace TransactionAlgorithmFactory
@@ -33,5 +37,6 @@ namespace TransactionAlgorithmFactory
 	std::unique_ptr<ITransactionAlgorithm> Create(
 		const cISCPropertyHolder* pPropertyHolder,
 		TransactionAlgorithmType type,
+		uint32_t lineNumber,
 		bool isIncome);
 }
