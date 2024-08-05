@@ -22,7 +22,7 @@ Each property supports multiple values.
 | 0xEA54D286  | Budget Item: Cost | Sint64 | Cost(s) of each line item. |
 | 0x90222B81  | Budget: Custom Department Budget Group | Uint32 | Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id. See the `Budget Groups` table below. |
 | 0x4252085F  | Budget: Custom Department Name Key | Uint32 | Specifies the name key for a custom budget department. The format is a group of 3 Uint32 values, consisting of the department id followed by the group and instance ids of the LTEXT file. |
-| 0x9EE1240F  | Budget: Custom Line Item Cost Algorithm | Uint32 | An optional property to configure the cost algorithm that is used for the line item(s). The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id. If the property is not present, the `Fixed` cost algorithm will be used. See the `Custom Line Item Cost Algorithm` below. |
+| 0x9EE1240F  | Budget: Custom Line Item Cost Algorithm | Uint32 | An optional property to configure the cost algorithm that is used for the line item(s). The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id. If the property is not present, the `Fixed` cost algorithm will be used. See the `Custom Line Item Cost Algorithm` table below. |
 
 #### Budget Groups
 
