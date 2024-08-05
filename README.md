@@ -66,7 +66,7 @@ l = High Wealth Population Region
 p = Geopolitics Factor
 d = National & International Tourism factor
 
-Variable Income = [x + y + z + (j * d) + (k * d) + (l * d)] / p
+Variable Expense/Income = [x + y + z + (j * d) + (k * d) + (l * d)] / p
 ```
 
 ### Example Building Exemplar Properties

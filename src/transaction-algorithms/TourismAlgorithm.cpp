@@ -53,7 +53,7 @@ int64_t TourismAlgorithm::Calculate(int64_t initialTotal)
 		// p = Geopolitics Factor
 		// d = National & International Tourism factor
 		//
-		// Variable Income = [x + y + z + (j * d) + (k * d) + (l * d)] / p
+		// Variable Expense/Income = [x + y + z + (j * d) + (k * d) + (l * d)] / p
 
 		const int64_t cityLowWealthPopulation = static_cast<int64_t>(spPopulationProvider->GetCityPopulation(0x1010));
 		const int64_t cityMediumWealthPopulation = static_cast<int64_t>(spPopulationProvider->GetCityPopulation(0x1020));
