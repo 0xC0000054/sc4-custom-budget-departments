@@ -266,8 +266,8 @@ namespace
 
 		try
 		{
-			destination.emplace(lineNumber, std::make_unique<LineItemTransaction>(pPropertyHolder, type, cost, lineNumber, isIncome));
-			result = true;
+			auto pair = destination.emplace(lineNumber, std::make_unique<LineItemTransaction>(pPropertyHolder, type, cost, lineNumber, isIncome));
+			result = pair.second;
 		}
 		catch (const CreateTransactionAlgorithmException& e)
 		{
