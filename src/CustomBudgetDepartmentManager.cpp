@@ -500,20 +500,20 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 			{
 				for (const CustomBudgetDepartmentInfo& item : items)
 				{
-					cISC4DepartmentBudget* const pDepartment = GetOrCreateBudgetDepartment(item);
+					LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
 
-					if (pDepartment)
+					if (pTransaction)
 					{
-						cISC4LineItem* const pLineItem = GetOrCreateLineItem(
-							buildingOccupant,
-							pDepartment,
-							item);
+						cISC4DepartmentBudget* const pDepartment = GetOrCreateBudgetDepartment(item);
 
-						if (pLineItem)
+						if (pDepartment)
 						{
-							LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
+							cISC4LineItem* const pLineItem = GetOrCreateLineItem(
+								buildingOccupant,
+								pDepartment,
+								item);
 
-							if (pTransaction)
+							if (pLineItem)
 							{
 								// We use the secondary info field to track the number of buildings
 								// of each type in the city.
@@ -541,6 +541,14 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
 								}
 							}
+							else
+							{
+								RemoveLineItemTransaction(item);
+							}
+						}
+						else
+						{
+							RemoveLineItemTransaction(item);
 						}
 					}
 				}
