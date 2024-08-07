@@ -500,78 +500,45 @@ void CustomBudgetDepartmentManager::InsertOccupant(cIGZMessage2Standard* pStanda
 			{
 				for (const CustomBudgetDepartmentInfo& item : items)
 				{
-					if (item.type == CustomBudgetDepartmentItemType::Expense)
+					cISC4DepartmentBudget* const pDepartment = GetOrCreateBudgetDepartment(item);
+
+					if (pDepartment)
 					{
-						cISC4DepartmentBudget* const pDepartment = GetOrCreateBudgetDepartment(item);
+						cISC4LineItem* const pLineItem = GetOrCreateLineItem(
+							buildingOccupant,
+							pDepartment,
+							item);
 
-						if (pDepartment)
+						if (pLineItem)
 						{
-							cISC4LineItem* const pLineItem = GetOrCreateLineItem(
-								buildingOccupant,
-								pDepartment,
-								item);
+							LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
 
-							if (pLineItem)
+							if (pTransaction)
 							{
-								LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
+								// We use the secondary info field to track the number of buildings
+								// of each type in the city.
 
-								if (pTransaction)
+								int64_t buildingCount = pLineItem->GetSecondaryInfoField();
+								buildingCount++;
+								pLineItem->SetSecondaryInfoField(buildingCount);
+
+								if (item.type == CustomBudgetDepartmentItemType::Expense)
 								{
-									// We use the secondary info field to track the number of buildings
-									// of each type in the city.
-
-									int64_t buildingCount = pLineItem->GetSecondaryInfoField();
-									buildingCount++;
-									pLineItem->SetSecondaryInfoField(buildingCount);
-
 									// Add the cost of the new building tho the current expenses.
 									pLineItem->SetFullExpenses(pTransaction->CalculateLineItemTotal(buildingCount));
-
-									if (buildingCount > 1)
-									{
-										// If there are two or more buildings of the same type we tell the game to display the building count
-										// in the UI.
-										// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
-										pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
-									}
 								}
-							}
-						}
-					}
-					else if (item.type == CustomBudgetDepartmentItemType::Income)
-					{
-						cISC4DepartmentBudget* const pDepartment = GetOrCreateBudgetDepartment(item);
-
-						if (pDepartment)
-						{
-							cISC4LineItem* const pLineItem = GetOrCreateLineItem(
-								buildingOccupant,
-								pDepartment,
-								item);
-
-							if (pLineItem)
-							{
-								LineItemTransaction* pTransaction = GetOrCreateLineItemTransaction(pPropertyHolder, item);
-
-								if (pTransaction)
+								else
 								{
-									// We use the secondary info field to track the number of buildings
-									// of each type in the city.
-
-									int64_t buildingCount = pLineItem->GetSecondaryInfoField();
-									buildingCount++;
-									pLineItem->SetSecondaryInfoField(buildingCount);
-
 									// Add the cost of the new building tho the current income.
 									pLineItem->SetIncome(pTransaction->CalculateLineItemTotal(buildingCount));
+								}
 
-									if (buildingCount > 1)
-									{
-										// If there are two or more buildings of the same type we tell the game to display the building count
-										// in the UI.
-										// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
-										pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
-									}
+								if (buildingCount > 1)
+								{
+									// If there are two or more buildings of the same type we tell the game to display the building count
+									// in the UI.
+									// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
+									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, true);
 								}
 							}
 						}
@@ -594,25 +561,25 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 
 		if (!items.empty())
 		{
-			for (const CustomBudgetDepartmentInfo & item : items)
+			for (const CustomBudgetDepartmentInfo& item : items)
 			{
-				if (item.type == CustomBudgetDepartmentItemType::Expense)
+				cISC4DepartmentBudget* const pDepartment = pBudgetSim->GetDepartmentBudget(item.department);
+
+				if (pDepartment)
 				{
-					cISC4DepartmentBudget* const pDepartment = pBudgetSim->GetDepartmentBudget(item.department);
+					cISC4LineItem* const pLineItem = pDepartment->GetLineItem(item.lineNumber);
 
-					if (pDepartment)
+					if (pLineItem)
 					{
-						cISC4LineItem* const pLineItem = pDepartment->GetLineItem(item.lineNumber);
+						// We use the secondary info field to track the number of buildings
+						// of each type in the city.
 
-						if (pLineItem)
+						int64_t buildingCount = pLineItem->GetSecondaryInfoField();
+
+						LineItemTransaction* pTransaction = GetLineItemTransaction(item);
+
+						if (item.type == CustomBudgetDepartmentItemType::Expense)
 						{
-							// We use the secondary info field to track the number of buildings
-							// of each type in the city.
-
-							int64_t buildingCount = pLineItem->GetSecondaryInfoField();
-
-							LineItemTransaction* pTransaction = GetLineItemTransaction(item);
-
 							// Subtract the cost of the building from the current expenses.
 							if (pTransaction)
 							{
@@ -623,49 +590,9 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 								// Handle buildings that were in the city before the transaction system was introduced.
 								pLineItem->AddToFullExpenses(-item.cost);
 							}
-
-							if (buildingCount > 1)
-							{
-								buildingCount--;
-								pLineItem->SetSecondaryInfoField(buildingCount);
-
-								// If there are two or more buildings of the same type we tell the game to display the building count
-								// in the UI.
-								// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
-								if (buildingCount == 1)
-								{
-									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, false);
-								}
-							}
-							else
-							{
-								pDepartment->RemoveLineItem(item.lineNumber);
-
-								if (pTransaction)
-								{
-									RemoveLineItemTransaction(item);
-								}
-							}
 						}
-					}
-				}
-				else if (item.type == CustomBudgetDepartmentItemType::Income)
-				{
-					cISC4DepartmentBudget* const pDepartment = pBudgetSim->GetDepartmentBudget(item.department);
-
-					if (pDepartment)
-					{
-						cISC4LineItem* const pLineItem = pDepartment->GetLineItem(item.lineNumber);
-
-						if (pLineItem)
+						else
 						{
-							// We use the secondary info field to track the number of buildings
-							// of each type in the city.
-
-							int64_t buildingCount = pLineItem->GetSecondaryInfoField();
-
-							LineItemTransaction* pTransaction = GetLineItemTransaction(item);
-
 							// Subtract the cost of the building from the current income.
 							if (pTransaction)
 							{
@@ -676,28 +603,28 @@ void CustomBudgetDepartmentManager::RemoveOccupant(cIGZMessage2Standard* pStanda
 								// Handle buildings that were in the city before the transaction system was introduced.
 								pLineItem->AddToIncome(-item.cost);
 							}
+						}
 
-							if (buildingCount > 1)
+						if (buildingCount > 1)
+						{
+							buildingCount--;
+							pLineItem->SetSecondaryInfoField(buildingCount);
+
+							// If there are two or more buildings of the same type we tell the game to display the building count
+							// in the UI.
+							// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
+							if (buildingCount == 1)
 							{
-								buildingCount--;
-								pLineItem->SetSecondaryInfoField(buildingCount);
-
-								// If there are two or more buildings of the same type we tell the game to display the building count
-								// in the UI.
-								// It will be displayed using the following format: <Building name> (<Building count>) <Total expense>
-								if (buildingCount == 1)
-								{
-									pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, false);
-								}
+								pLineItem->SetDisplayFlag(cISC4LineItem::DisplayFlag::ShowSecondaryInfoField, false);
 							}
-							else
-							{
-								pDepartment->RemoveLineItem(item.lineNumber);
+						}
+						else
+						{
+							pDepartment->RemoveLineItem(item.lineNumber);
 
-								if (pTransaction)
-								{
-									RemoveLineItemTransaction(item);
-								}
+							if (pTransaction)
+							{
+								RemoveLineItemTransaction(item);
 							}
 						}
 					}
