@@ -2,8 +2,7 @@
 
 A DLL plugin for SimCity 4 that allows new budget departments to be added to the game using a building's exemplar.
 
-Currently the new budget departments are limited to having a fixed/constant expense and/or income value, similar to
-how the game's Landmark Effect and Business Deal Income budget purpose ids work.
+The budget department line item expense and/or income value(s) can be fixed/constant or variable based on several algorithms.
 
 ## Exemplar Properties
 
