@@ -357,6 +357,172 @@ namespace
 
 		return result;
 	}
+
+	bool GetExemplarName(const cISCPropertyHolder* pPropertyHolder, cRZBaseString& value)
+	{
+		bool result = false;
+
+		if (pPropertyHolder)
+		{
+			constexpr uint32_t kExemplarNameProperty = 0x20;
+
+			const cISCProperty* pExemplarNameProperty = pPropertyHolder->GetProperty(kExemplarNameProperty);
+
+			if (pExemplarNameProperty)
+			{
+				const cIGZVariant* pVariant = pExemplarNameProperty->GetPropertyValue();
+
+				if (pVariant)
+				{
+					if (pVariant->GetValString(value))
+					{
+						result = value.Strlen() > 0;
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+	void LogBudgetPropertyNotFound(
+		const cISCPropertyHolder* pPropertyHolder,
+		const char* propertyName)
+	{
+		Logger& logger = Logger::GetInstance();
+
+		cRZBaseString exemplarName;
+
+		if (GetExemplarName(pPropertyHolder, exemplarName))
+		{
+			logger.WriteLineFormatted(
+				LogLevel::Error,
+				"Failed to get the %s property for exemplar name: %s",
+				propertyName,
+				exemplarName.ToChar());
+		}
+		else
+		{
+			logger.WriteLineFormatted(
+				LogLevel::Error,
+				"Failed to get the %s property.",
+				propertyName);
+		}
+	}
+
+	void LogBudgetPropertyWrongCount(
+		const cISCPropertyHolder* pPropertyHolder,
+		const char* propertyName,
+		size_t requiredCount)
+	{
+		Logger& logger = Logger::GetInstance();
+
+		cRZBaseString exemplarName;
+
+		if (GetExemplarName(pPropertyHolder, exemplarName))
+		{
+			logger.WriteLineFormatted(
+				LogLevel::Error,
+				"The %s property must have %u items for exemplar name: %s",
+				propertyName,
+				requiredCount,
+				exemplarName.ToChar());
+		}
+		else
+		{
+			logger.WriteLineFormatted(
+				LogLevel::Error,
+				"The %s property must have %u items.",
+				propertyName,
+				requiredCount);
+		}
+	}
+
+	struct BudgetPropertyInfo
+	{
+		std::vector<uint32_t> departmentIds;
+		std::vector<uint32_t> lines;
+		std::vector<int64_t> costs;
+		std::unordered_map<uint32_t, uint32_t> budgetGroups;
+		std::unordered_map<uint32_t, StringResourceKey> departmentNameKeys;
+	};
+
+	bool GetBudgetPropertyInfo(
+		const cISCPropertyHolder* pPropertyHolder,
+		const std::vector<uint32_t>& purposeIds,
+		BudgetPropertyInfo& info)
+	{
+		if (!GetPropertyValue(pPropertyHolder, kBudgetItemDepartmentProperty, info.departmentIds))
+		{
+			LogBudgetPropertyNotFound(pPropertyHolder, "Budget Item: Department.");
+			return false;
+		}
+
+		if (!GetPropertyValue(pPropertyHolder, kBudgetItemLineProperty, info.lines))
+		{
+			LogBudgetPropertyNotFound(pPropertyHolder, "Budget Item: Line");
+			return false;
+		}
+
+		if (!GetPropertyValue(pPropertyHolder, kBudgetItemCostProperty, info.costs))
+		{
+			LogBudgetPropertyNotFound(pPropertyHolder, "Budget Item: Cost");
+			return false;
+		}
+
+		if (!GetPropertyValue(pPropertyHolder, kCustomBudgetDepartmentBudgetGroupProperty, info.budgetGroups))
+		{
+			LogBudgetPropertyNotFound(pPropertyHolder, "Budget: Custom Department Budget Group");
+			return false;
+		}
+
+		if (!GetBudgetDepartmentNameProperty(pPropertyHolder, kCustomBudgetDepartmentNameKeyProperty, info.departmentNameKeys))
+		{
+			LogBudgetPropertyNotFound(pPropertyHolder, "Budget: Custom Department Name Key");
+			return false;
+		}
+
+		const size_t budgetDepartmentCount = info.departmentIds.size();
+		const size_t customBudgetDepartmentCount = info.budgetGroups.size();
+
+		if (purposeIds.size() != budgetDepartmentCount)
+		{
+			LogBudgetPropertyWrongCount(
+				pPropertyHolder,
+				"Budget Item: Purpose",
+				budgetDepartmentCount);
+			return false;
+		}
+
+		if (info.lines.size() != budgetDepartmentCount)
+		{
+			LogBudgetPropertyWrongCount(
+				pPropertyHolder,
+				"Budget Item: Line",
+				budgetDepartmentCount);
+			return false;
+		}
+
+		if (info.costs.size() != budgetDepartmentCount)
+		{
+			LogBudgetPropertyWrongCount(
+				pPropertyHolder,
+				"Budget Item: Cost",
+				budgetDepartmentCount);
+			return false;
+		}
+
+		if (info.departmentNameKeys.size() != customBudgetDepartmentCount)
+		{
+			LogBudgetPropertyWrongCount(
+				pPropertyHolder,
+				"Budget: Custom Department Name Key",
+				customBudgetDepartmentCount);
+			return false;
+		}
+
+		return true;
+	}
 }
 
 CustomBudgetDepartmentManager::CustomBudgetDepartmentManager()
@@ -962,57 +1128,42 @@ std::vector<CustomBudgetDepartmentManager::CustomBudgetDepartmentInfo> CustomBud
 	{
 		if (ContainsCustomBudgetDepartmentPurposeId(purposeIds))
 		{
-			std::vector<uint32_t> departmentIds;
-			std::vector<uint32_t> lines;
-			std::vector<int64_t> costs;
-			std::unordered_map<uint32_t, uint32_t> budgetGroups;
-			std::unordered_map<uint32_t, StringResourceKey> departmentNameKeys;
+			BudgetPropertyInfo info;
 
-			if (GetPropertyValue(pPropertyHolder, kBudgetItemDepartmentProperty, departmentIds)
-				&& GetPropertyValue(pPropertyHolder, kBudgetItemLineProperty, lines)
-				&& GetPropertyValue(pPropertyHolder, kBudgetItemCostProperty, costs)
-				&& GetPropertyValue(pPropertyHolder, kCustomBudgetDepartmentBudgetGroupProperty, budgetGroups)
-				&& GetBudgetDepartmentNameProperty(pPropertyHolder, kCustomBudgetDepartmentNameKeyProperty, departmentNameKeys))
+			if (GetBudgetPropertyInfo(pPropertyHolder, purposeIds, info))
 			{
-				const size_t budgetDepartmentCount = departmentIds.size();
-				const size_t customBudgetDepartmentCount = budgetGroups.size();
+				const size_t budgetDepartmentCount = info.departmentIds.size();
 
-				if (purposeIds.size() == budgetDepartmentCount
-					&& lines.size() == budgetDepartmentCount
-					&& costs.size() == budgetDepartmentCount
-					&& departmentNameKeys.size() == customBudgetDepartmentCount)
+				for (size_t i = 0; i < budgetDepartmentCount; i++)
 				{
-					for (size_t i = 0; i < budgetDepartmentCount; i++)
+					CustomBudgetDepartmentItemType type = CustomBudgetDepartmentItemType::Invalid;
+
+					switch (purposeIds[i])
 					{
-						CustomBudgetDepartmentItemType type = CustomBudgetDepartmentItemType::Invalid;
+					case kCustomBudgetDepartmentExpensePurposeId:
+						type = CustomBudgetDepartmentItemType::Expense;
+						break;
+					case kCustomBudgetDepartmentIncomePurposeId:
+						type = CustomBudgetDepartmentItemType::Income;
+						break;
+					}
 
-						switch (purposeIds[i])
+					if (type != CustomBudgetDepartmentItemType::Invalid)
+					{
+						const uint32_t departmentId = info.departmentIds[i];
+						const auto& budgetGroupItem = info.budgetGroups.find(departmentId);
+						const auto& departmentNameItem = info.departmentNameKeys.find(departmentId);
+
+						if (budgetGroupItem != info.budgetGroups.end()
+							&& departmentNameItem != info.departmentNameKeys.end())
 						{
-						case kCustomBudgetDepartmentExpensePurposeId:
-							type = CustomBudgetDepartmentItemType::Expense;
-							break;
-						case kCustomBudgetDepartmentIncomePurposeId:
-							type = CustomBudgetDepartmentItemType::Income;
-							break;
-						}
-
-						if (type != CustomBudgetDepartmentItemType::Invalid)
-						{
-							const uint32_t departmentId = departmentIds[i];
-							const auto& budgetGroupItem = budgetGroups.find(departmentId);
-							const auto& departmentNameItem = departmentNameKeys.find(departmentId);
-
-							if (budgetGroupItem != budgetGroups.end()
-								&& departmentNameItem != departmentNameKeys.end())
-							{
-								items.push_back(CustomBudgetDepartmentInfo(
-									type,
-									departmentId,
-									lines[i],
-									budgetGroupItem->second,
-									costs[i],
-									departmentNameItem->second));
-							}
+							items.push_back(CustomBudgetDepartmentInfo(
+								type,
+								departmentId,
+								info.lines[i],
+								budgetGroupItem->second,
+								info.costs[i],
+								departmentNameItem->second));
 						}
 					}
 				}
