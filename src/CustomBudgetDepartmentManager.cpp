@@ -523,6 +523,34 @@ namespace
 
 		return true;
 	}
+
+	void LogRequiredDepartmentItemNotFound(
+		const cISCPropertyHolder* pPropertyHolder,
+		const char* itemName,
+		uint32_t departmentID)
+	{
+		Logger& logger = Logger::GetInstance();
+
+		cRZBaseString exemplarName;
+
+		if (GetExemplarName(pPropertyHolder, exemplarName))
+		{
+			logger.WriteLineFormatted(
+				LogLevel::Error,
+				"Could not find the %s value for department id 0x%08X. Item exemplar name: %s",
+				itemName,
+				departmentID,
+				exemplarName.ToChar());
+		}
+		else
+		{
+			logger.WriteLineFormatted(
+				LogLevel::Error,
+				"Could not find the %s value for department id 0x%08X.",
+				itemName,
+				departmentID);
+		}
+	}
 }
 
 CustomBudgetDepartmentManager::CustomBudgetDepartmentManager()
@@ -1152,18 +1180,35 @@ std::vector<CustomBudgetDepartmentManager::CustomBudgetDepartmentInfo> CustomBud
 					{
 						const uint32_t departmentId = info.departmentIds[i];
 						const auto& budgetGroupItem = info.budgetGroups.find(departmentId);
-						const auto& departmentNameItem = info.departmentNameKeys.find(departmentId);
 
-						if (budgetGroupItem != info.budgetGroups.end()
-							&& departmentNameItem != info.departmentNameKeys.end())
+						if (budgetGroupItem != info.budgetGroups.end())
 						{
-							items.push_back(CustomBudgetDepartmentInfo(
-								type,
-								departmentId,
-								info.lines[i],
-								budgetGroupItem->second,
-								info.costs[i],
-								departmentNameItem->second));
+							const auto& departmentNameItem = info.departmentNameKeys.find(departmentId);
+
+							if (departmentNameItem != info.departmentNameKeys.end())
+							{
+								items.push_back(CustomBudgetDepartmentInfo(
+									type,
+									departmentId,
+									info.lines[i],
+									budgetGroupItem->second,
+									info.costs[i],
+									departmentNameItem->second));
+							}
+							else
+							{
+								LogRequiredDepartmentItemNotFound(
+									pPropertyHolder,
+									"name key",
+									departmentId);
+							}
+						}
+						else
+						{
+							LogRequiredDepartmentItemNotFound(
+								pPropertyHolder,
+								"budget group id",
+								departmentId);
 						}
 					}
 				}
