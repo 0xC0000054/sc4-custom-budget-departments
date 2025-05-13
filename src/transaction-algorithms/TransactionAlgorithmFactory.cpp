@@ -38,7 +38,7 @@ static constexpr uint32_t ResidentialTourismPopulationFactorsPropertyId = 0x9EE1
 
 namespace
 {
-	void ThrowCreateImageExceptionFormatted(const char* const format, ...)
+	void ThrowCreateTransactionAlgorithmExceptionFormatted(const char* const format, ...)
 	{
 		va_list args;
 		va_start(args, format);
@@ -137,7 +137,7 @@ namespace
 
 						if (lineItemStartIndex == SIZE_MAX)
 						{
-							ThrowCreateImageExceptionFormatted(
+							ThrowCreateTransactionAlgorithmExceptionFormatted(
 								"The %s property does not contain line item 0x%08x.",
 								lineNumber);
 						}
@@ -151,22 +151,22 @@ namespace
 					}
 					else
 					{
-						ThrowCreateImageExceptionFormatted("The %s property type is not Sint64Array.", propertyName);
+						ThrowCreateTransactionAlgorithmExceptionFormatted("The %s property type is not Sint64Array.", propertyName);
 					}
 				}
 				else
 				{
-					ThrowCreateImageExceptionFormatted(GenericErrorFormat, propertyName);
+					ThrowCreateTransactionAlgorithmExceptionFormatted(GenericErrorFormat, propertyName);
 				}
 			}
 			else
 			{
-				ThrowCreateImageExceptionFormatted(GenericErrorFormat, propertyName);
+				ThrowCreateTransactionAlgorithmExceptionFormatted(GenericErrorFormat, propertyName);
 			}
 		}
 		else
 		{
-			ThrowCreateImageExceptionFormatted(GenericErrorFormat, propertyName);
+			ThrowCreateTransactionAlgorithmExceptionFormatted(GenericErrorFormat, propertyName);
 		}
 
 		return lineItemData;
@@ -183,7 +183,7 @@ namespace
 		// This is done to ensure the values fit in a double.
 		if (numerator < INT32_MIN || numerator > INT32_MAX)
 		{
-			ThrowCreateImageExceptionFormatted(
+			ThrowCreateTransactionAlgorithmExceptionFormatted(
 				"Error parsing the %s factor for %s property line item 0x%08x: "
 				"The numerator must be in the range of -2,147,483,648 to 2,147,483,647.",
 				valueName,
@@ -193,7 +193,7 @@ namespace
 		}
 		else if (denominator <= 0 || denominator > INT32_MAX)
 		{
-			ThrowCreateImageExceptionFormatted(
+			ThrowCreateTransactionAlgorithmExceptionFormatted(
 				"Error parsing the %s factor for %s property line item 0x%08x: "
 				"The denominator must be in the range of 1 to 2,147,483,647.",
 				valueName,
