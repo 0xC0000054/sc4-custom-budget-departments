@@ -25,6 +25,9 @@
 
 enum class TransactionAlgorithmType : uint32_t
 {
+	// These values must not be renumbered because
+	// they are serialized in the save game data.
+
 	Fixed = 0,
 	ResidentialTotalPopulation = 1,
 	ResidentialWealthGroupPopulation = 2,
