@@ -89,7 +89,7 @@ This example shows part of a building exemplar with a custom department that has
 * Windows 10 or later
 * [Microsoft Visual C++ 2022 x86 Redistribute](https://aka.ms/vs/17/release/vc_redist.x86.exe)
 
-The plugin may work on Windows 7 or later, but I do not have the ability to test that.
+The plugin may work on Windows 7, but I do not have the ability to test that.
 
 ## Installation
 
