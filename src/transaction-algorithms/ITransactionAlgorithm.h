@@ -36,7 +36,7 @@ public:
 	 * @param initialTotal The initial total income or expense for the line item.
 	 * @return The calculated total income or expense for the line item.
 	 */
-	virtual int64_t Calculate(int64_t initialTotal) = 0;
+	virtual int64_t Calculate(int64_t initialTotal) const = 0;
 
 	virtual bool Read(cIGZIStream& stream) = 0;
 	virtual bool Write(cIGZOStream& stream) const = 0;

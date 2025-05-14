@@ -40,7 +40,7 @@ TransactionAlgorithmType ResidentialTotalPopulationAlgorithm::GetAlgorithmType()
 	return TransactionAlgorithmType::ResidentialTotalPopulation;
 }
 
-int64_t ResidentialTotalPopulationAlgorithm::Calculate(int64_t initialTotal)
+int64_t ResidentialTotalPopulationAlgorithm::Calculate(int64_t initialTotal) const
 {
 	int64_t newTotal = initialTotal;
 

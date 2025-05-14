@@ -83,7 +83,7 @@ LineItemTransaction& LineItemTransaction::operator=(LineItemTransaction&& other)
 	return *this;
 }
 
-int64_t LineItemTransaction::CalculateLineItemTotal(int64_t buildingCount)
+int64_t LineItemTransaction::CalculateLineItemTotal(int64_t buildingCount) const
 {
 	int64_t total = 0;
 

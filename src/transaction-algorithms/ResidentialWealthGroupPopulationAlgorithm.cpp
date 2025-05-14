@@ -48,7 +48,7 @@ TransactionAlgorithmType ResidentialWealthGroupPopulationAlgorithm::GetAlgorithm
 	return TransactionAlgorithmType::ResidentialWealthGroupPopulation;
 }
 
-int64_t ResidentialWealthGroupPopulationAlgorithm::Calculate(int64_t initialTotal)
+int64_t ResidentialWealthGroupPopulationAlgorithm::Calculate(int64_t initialTotal) const
 {
 	int64_t newTotal = initialTotal;
 

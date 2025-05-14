@@ -43,7 +43,7 @@ public:
 	LineItemTransaction& operator=(const LineItemTransaction&) = delete;
 	LineItemTransaction& operator=(LineItemTransaction&&) noexcept;
 
-	int64_t CalculateLineItemTotal(int64_t buildingCount);
+	int64_t CalculateLineItemTotal(int64_t buildingCount) const;
 
 	bool IsFixedCost() const;
 	bool IsIncome() const;

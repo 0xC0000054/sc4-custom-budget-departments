@@ -44,7 +44,7 @@ TransactionAlgorithmType TourismAlgorithm::GetAlgorithmType() const
 	return TransactionAlgorithmType::Tourism;
 }
 
-int64_t TourismAlgorithm::Calculate(int64_t initialTotal)
+int64_t TourismAlgorithm::Calculate(int64_t initialTotal) const
 {
 	int64_t newTotal = initialTotal;
 

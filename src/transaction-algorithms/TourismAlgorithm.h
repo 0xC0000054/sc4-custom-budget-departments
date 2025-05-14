@@ -33,7 +33,7 @@ public:
 
 	TransactionAlgorithmType GetAlgorithmType() const override;
 
-	int64_t Calculate(int64_t initialTotal) override;
+	int64_t Calculate(int64_t initialTotal) const override;
 
 	bool Read(cIGZIStream& stream) override;
 	bool Write(cIGZOStream& stream) const override;
