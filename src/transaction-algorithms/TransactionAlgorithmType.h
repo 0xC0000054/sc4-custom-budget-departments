@@ -32,4 +32,5 @@ enum class TransactionAlgorithmType : uint32_t
 	ResidentialTotalPopulation = 1,
 	ResidentialWealthGroupPopulation = 2,
 	Tourism = 3,
+	LuaFunction = 4,
 };

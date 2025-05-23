@@ -33,10 +33,11 @@ public:
 
 	/**
 	 * @brief Calculates the line item's total income or expense.
-	 * @param initialTotal The initial total income or expense for the line item.
+	 * @param perBuildingFixedCashFlow The per building income or expense.
+	 * @param buildingCount The number of buildings.
 	 * @return The calculated total income or expense for the line item.
 	 */
-	virtual int64_t Calculate(int64_t initialTotal) const = 0;
+	virtual int64_t Calculate(int64_t perBuildingFixedCashFlow, int64_t buildingCount) const = 0;
 
 	virtual bool Read(cIGZIStream& stream) = 0;
 	virtual bool Write(cIGZOStream& stream) const = 0;

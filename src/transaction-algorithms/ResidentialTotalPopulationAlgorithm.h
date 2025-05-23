@@ -33,7 +33,7 @@ public:
 
 	TransactionAlgorithmType GetAlgorithmType() const override;
 
-	int64_t Calculate(int64_t fixedCashFlow) const override;
+	int64_t Calculate(int64_t perBuildingFixedCashFlow, int64_t buildingCount) const override;
 
 	bool Read(cIGZIStream& stream) override;
 	bool Write(cIGZOStream& stream) const override;

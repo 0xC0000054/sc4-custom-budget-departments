@@ -89,11 +89,14 @@ int64_t LineItemTransaction::CalculateLineItemTotal(int64_t buildingCount) const
 
 	if (buildingCount > 0)
 	{
-		total = perBuildingFixedCashFlow * buildingCount;
-
 		if (algorithm)
 		{
-			total = algorithm->Calculate(total);
+			total = algorithm->Calculate(perBuildingFixedCashFlow, buildingCount);
+		}
+		else
+		{
+			// The fixed expense/income algorithm.
+			total = perBuildingFixedCashFlow * buildingCount;
 		}
 	}
 

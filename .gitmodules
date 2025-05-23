@@ -1,0 +1,3 @@
+[submodule "vendor/SafeInt"]
+	path = vendor/SafeInt
+	url = https://github.com/dcleblanc/SafeInt.git

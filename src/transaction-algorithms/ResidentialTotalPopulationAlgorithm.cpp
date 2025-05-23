@@ -40,9 +40,9 @@ TransactionAlgorithmType ResidentialTotalPopulationAlgorithm::GetAlgorithmType()
 	return TransactionAlgorithmType::ResidentialTotalPopulation;
 }
 
-int64_t ResidentialTotalPopulationAlgorithm::Calculate(int64_t initialTotal) const
+int64_t ResidentialTotalPopulationAlgorithm::Calculate(int64_t perBuildingFixedCashFlow, int64_t buildingCount) const
 {
-	int64_t newTotal = initialTotal;
+	int64_t newTotal = perBuildingFixedCashFlow * buildingCount;
 
 	if (spPopulationProvider)
 	{

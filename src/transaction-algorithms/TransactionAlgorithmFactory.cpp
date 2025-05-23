@@ -25,6 +25,7 @@
 #include "cISCProperty.h"
 #include "cISCPropertyHolder.h"
 #include "SCPropertyUtil.h"
+#include "LuaFunctionAlgorithm.h"
 #include "ResidentialTotalPopulationAlgorithm.h"
 #include "ResidentialWealthGroupPopulationAlgorithm.h"
 #include "TourismAlgorithm.h"
@@ -35,6 +36,7 @@
 static constexpr uint32_t ResidentialTotalPopulationFactorPropertyId = 0x9EE12410;
 static constexpr uint32_t ResidentialWealthGroupPopulationFactorsPropertyId = 0x9EE12411;
 static constexpr uint32_t ResidentialTourismPopulationFactorsPropertyId = 0x9EE12412;
+static constexpr uint32_t LuaFunctiionNamePropertyId = 0x9EE12413;
 
 namespace
 {
@@ -231,6 +233,8 @@ std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(Trans
 		return std::make_unique<ResidentialWealthGroupPopulationAlgorithm>();
 	case TransactionAlgorithmType::Tourism:
 		return std::make_unique<TourismAlgorithm>();
+	case TransactionAlgorithmType::LuaFunction:
+		return std::make_unique<LuaFunctionAlgorithm>();
 	default:
 		throw CreateTransactionAlgorithmException("Unknown TransactionAlgorithmType value.");
 	}
@@ -316,6 +320,28 @@ std::unique_ptr<ITransactionAlgorithm> TransactionAlgorithmFactory::Create(
 		int64_t geopoliticsFactor = lineItemData[2];
 
 		algorithm = std::make_unique<TourismAlgorithm>(nationalAndInternationalTourismFactor, geopoliticsFactor);
+	}
+	else if (type == TransactionAlgorithmType::LuaFunction)
+	{
+		cRZBaseString functionName;
+
+		if (SCPropertyUtil::GetPropertyValue(pPropertyHolder, LuaFunctiionNamePropertyId, functionName))
+		{
+			if (functionName.Strlen() > 0)
+			{
+				algorithm = std::make_unique<LuaFunctionAlgorithm>(functionName);
+			}
+			else
+			{
+				throw CreateTransactionAlgorithmException(
+					"The 'Budget Custom Line Item Variable Expense/Income: Lua Function' property is an empty string.");
+			}
+		}
+		else
+		{
+			throw CreateTransactionAlgorithmException(
+				"Failed to read the 'Budget Custom Line Item Variable Expense/Income: Lua Function' property.");
+		}
 	}
 
 	return algorithm;

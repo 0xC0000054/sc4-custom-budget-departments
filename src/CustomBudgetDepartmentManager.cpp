@@ -27,6 +27,7 @@
 #include "cIGZMessageServer2.h"
 #include "cIGZPersistDBSegment.h"
 #include "cIGZVariant.h"
+#include "cISC4AdvisorSystem.h"
 #include "cISC4BudgetSimulator.h"
 #include "cISC4BuildingOccupant.h"
 #include "cISC4City.h"
@@ -36,6 +37,7 @@
 #include "cISC4DepartmentBudget.h"
 #include "cISC4LineItem.h"
 #include "cISC4Occupant.h"
+#include "cISCLua.h"
 #include "cISCProperty.h"
 #include "cISCPropertyHolder.h"
 #include "cRZAutoRefCount.h"
@@ -96,6 +98,7 @@ static constexpr uint32_t CustomBudgetDepartmentManagerGroupId = 0xFE005707;
 static constexpr uint32_t CustomBudgetDepartmentManagerInstanceId = 0;
 
 IPopulationProvider* spPopulationProvider;
+cISCLua* spLua;
 
 namespace
 {
@@ -670,10 +673,12 @@ bool CustomBudgetDepartmentManager::DoMessage(cIGZMessage2* pMsg)
 void CustomBudgetDepartmentManager::PostCityInit(cISC4City* pCity)
 {
 	pBudgetSim = nullptr;
+	spLua = nullptr;
 
 	if (pCity)
 	{
 		pBudgetSim = pCity->GetBudgetSimulator();
+		spLua = pCity->GetAdvisorSystem()->GetScriptingContext();
 		populationProvider.Init();
 	}
 }
@@ -681,6 +686,7 @@ void CustomBudgetDepartmentManager::PostCityInit(cISC4City* pCity)
 void CustomBudgetDepartmentManager::PostCityShutdown()
 {
 	pBudgetSim = nullptr;
+	spLua = nullptr;
 	populationProvider.Shutdown();
 	customBudgetDepartments.clear();
 }

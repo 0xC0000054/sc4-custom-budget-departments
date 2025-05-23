@@ -21,9 +21,24 @@
  */
 
 #pragma once
-#include "IPopulationProvider.h"
+#include "ITransactionAlgorithm.h"
+#include "cRZBaseString.h"
 
-class cISCLua;
+class LuaFunctionAlgorithm : public ITransactionAlgorithm
+{
+public:
+	LuaFunctionAlgorithm();
+	LuaFunctionAlgorithm(const cRZBaseString& functionName);
 
-extern IPopulationProvider* spPopulationProvider;
-extern cISCLua* spLua;
+	TransactionAlgorithmType GetAlgorithmType() const override;
+
+	int64_t Calculate(int64_t perBuildingFixedCashFlow, int64_t buildingCount) const override;
+
+	bool Read(cIGZIStream& stream) override;
+	bool Write(cIGZOStream& stream) const override;
+
+private:
+	void LogLuaFunctionCallError(const char* message) const;
+
+	cRZBaseString functionName;
+};

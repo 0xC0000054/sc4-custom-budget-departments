@@ -43,6 +43,7 @@ Each property supports multiple values.
 | 0x00000001 | Variable City Residential Total Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based a factor of the city's total residential population. Uses the `Budget Custom Line Item Variable Expense/Income: Res. Total Pop.` property. |
 | 0x00000002 | Variable City Residential Wealth Groups Pop. | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors of the city's residential population by wealth group. Uses the `Budget Custom Line Item Variable Expense/Income: Res. Wealth Group Pop.` property. |
 | 0x00000003 | Variable Tourism | The fixed expense/income set by the `Budget Item: Cost` property will vary based factors related to an approximation of local/regional tourism. Uses the `Budget Custom Line Item Variable Expense/Income: Tourism`. |
+| 0x00000004 | Lua Function | The fixed expense/income set by the `Budget Item: Cost` property will be adjusted by a Lua function. Uses the `Budget Custom Line Item Variable Expense/Income: Lua Function`. |
 
 #### Custom Line Item Cost Algorithm Tuning Properties
 
@@ -51,6 +52,28 @@ Each property supports multiple values.
 | 0x9EE12410 | Budget Custom Line Item Variable Expense/Income: Res. Total Pop. | Sint64 | Factor applied to the budget item expense/income based on the total residential population. The format is a group of 3 Sint64 values representing the line item id followed by the numerator and denominator for the total residential population factor. |
 | 0x9EE12411 | Budget Custom Line Item Variable Expense/Income: Res. Wealth Groups Pop. | Sint64 | Factor applied to the budget item expense/income based on the residential wealth group populations. The format is a group of 7 Sint64 values representing the line item id followed by the numerators and denominators for the low, medium, and high wealth group factors. |
 | 0x9EE12412 | Budget Custom Line Item Variable Expense/Income: Tourism | Sint64 | Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator for the national and international tourism factor and a Sint64 geopolitical factor. |
+| 0x9EE12413 | Budget Custom Line Item Variable Expense/Income: Lua Function | String | The name of the Lua function that calculates the expense or income. |
+
+##### Lua Function
+
+This is an advanced feature that allows a building to define is own function that calculates the expense or income using the game's Lua scripting system.
+
+Like all SC4 Lua functions defined in mods, it must be uniquely named. This is commonly done by prefixing the function name with the author's screen name, the mod name, or something similar.
+
+The Lua function takes the per-building fixed cost and number of buildings as parameters, and must return a Number value.
+
+```lua
+-- The scbd prefix used in this example is the initials for the DLL's name, SC4CustomBudgetDepartments.
+-- perBuildingFixedCost is the Budget Item: Cost value for that line item.
+-- buildingCount is the number of buildings of that type that exist in the city.
+function scbd_get_monthly_income(perBuildingFixedCost, buildingCount)
+local base = perBuildingFixedCost * buildingCount
+-- Add 1 $ in extra income for ever 1000 sims in the RCI population.
+local extra = game.g_city_rci_population * 0.001
+
+return base + extra
+end
+```
 
 ##### Tourism Algorithm Details
 
