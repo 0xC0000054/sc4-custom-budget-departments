@@ -63,10 +63,10 @@ Like all SC4 Lua functions defined in mods, it must be uniquely named. This is c
 The Lua function takes the per-building fixed cost and number of buildings as parameters, and must return a Number value.
 
 ```lua
--- The scbd prefix used in this example is the initials for the DLL's name, SC4CustomBudgetDepartments.
+-- The cbd prefix used in this example is the initials for the DLL's name, CustomBudgetDepartments.
 -- perBuildingFixedCost is the Budget Item: Cost value for that line item.
 -- buildingCount is the number of buildings of that type that exist in the city.
-function scbd_get_monthly_income(perBuildingFixedCost, buildingCount)
+function cbd_get_monthly_income(perBuildingFixedCost, buildingCount)
 local base = perBuildingFixedCost * buildingCount
 -- Add 1 $ in extra income for ever 1000 sims in the RCI population.
 local extra = game.g_city_rci_population * 0.001
