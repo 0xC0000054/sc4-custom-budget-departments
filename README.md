@@ -56,7 +56,7 @@ Each property supports multiple values.
 
 ##### Lua Function
 
-This is an advanced feature that allows a building to define is own function that calculates the expense or income using the game's Lua scripting system.
+This is an advanced feature that allows a building to define its own function that calculates the expense or income using the game's Lua scripting system.
 
 Like all SC4 Lua functions defined in mods, it must be uniquely named. This is commonly done by prefixing the function name with the author's screen name, the mod name, or something similar.
 
