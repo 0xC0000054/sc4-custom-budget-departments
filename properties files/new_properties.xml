@@ -4477,7 +4477,7 @@ Percentage of growth which should be of type 14, as a function of the population
 Percentage of growth which should be of type 15, as a function of the population of the city
 </HELP>
   </PROPERTY>
-  
+
   <PROPERTY Name="Water Supply Cap" ID="0x87cd6370" Type="Uint8" Default="0x01" ShowAsHex="Y">
     <HELP>
 Maximum density allowed without water service
@@ -5545,10 +5545,12 @@ Types of occupants
     <HELP>
 Controls which budget window the custom budget department is grouped under. The format is a group of 2 Uint32 values, consisting of the department id followed by the budget group id.
 </HELP>
+  </PROPERTY>
   <PROPERTY Name="Budget: Custom Line Item Cost Algorithm" ID="0x9EE1240F" Type="Uint32" ShowAsHex="Y">
     <HELP>
-The cost algorithm that is used for the line item. The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id.
-</HELP>
+      The cost algorithm that is used for the line item. The format is a group of 2 UInt32 values, consisting of the line item id followed by the algorithm id.
+    </HELP>
+  </PROPERTY>
   <PROPERTY Name="Budget Custom Line Item Variable Expense/Income: Res. Total Pop." ID="0x9EE12410" Type="Sint64" ShowAsHex="Y">
     <HELP>
 Factor applied to the budget item expense based on the total residential population. The format is a group of 3 Sint64 values representing the line item id followed by the numerator and denominator for the total residential population factor.
@@ -5563,6 +5565,11 @@ Factor applied to the budget item expense based on the residential wealth group 
     <HELP>
 Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator for the national and international tourism factor and a Sint64 geopolitical factor.
 </HELP>
+  </PROPERTY>
+  <PROPERTY Name="Budget Custom Line Item Variable Expense/Income: Lua Function" ID="0x9EE12413" Type="String">
+    <HELP>
+      The name of the Lua function that calculates the expense or income.
+    </HELP>
   </PROPERTY>
   <PROPERTY Name="mnWeeksForCompleteTemperatureSimulation" ID="0xa7607d70" Type="Sint32" Default="1" ShowAsHex="Y">
     <HELP>
@@ -8951,9 +8958,9 @@ GUID(s) of purpose ID for this budget item.
     </OPTION>
     <OPTION Value="0x0c3bf549" Name="Toll Booth Maintenance">
     </OPTION>
-	<OPTION Value="0x87bd3990" Name="Custom Department Expense">
+  <OPTION Value="0x87bd3990" Name="Custom Department Expense">
     </OPTION>
-	<OPTION Value="0x46261226" Name="Custom Department Income">
+  <OPTION Value="0x46261226" Name="Custom Department Income">
     </OPTION>
   </PROPERTY>
   <PROPERTY Name="Budget Item: Cost" ID="0xea54d286" Type="Sint64" Count="-1" Default="0" MinValue="0" ShowAsHex="N">
@@ -9091,9 +9098,9 @@ kPropertyID_RotationsAllowed
 How many people are represented by one unit in the coverage map
 </HELP>
   </PROPERTY>
-  
+
 </PROPERTIES>
-  
+
 <CATEGORIES>
 
 <CATEGORY Name="All" ID="0xec8fba75" ParentID="0x00000000" img="img_all.gif"
@@ -9126,7 +9133,7 @@ This selection will filter the display to only show foundation plug-ins.  To cre
  <PROPERTY ID="0x2A0348BC" Value="10.00000000"/><!--Flora: Cluster max height-->
  <PROPERTY ID="0x49BEDA31" Value="0x01"/><!--MaxFireStage-->
  <PROPERTY ID="0x68EE9764" Value="3.00000000,0.00000000,0.00000000,0.00000000"/><!--Pollution radii-->
- <PROPERTY ID="0x6A37EBB6" Value="True"/><!--Flora: Wild--> 
+ <PROPERTY ID="0x6A37EBB6" Value="True"/><!--Flora: Wild-->
  <PROPERTY ID="0xA8F149C5" Value="0xE8F02106,0x48F02107"/><!--kSC4FloraFamilyProperty-->
  <PROPERTY ID="0xE9D117C3" Value="False"/><!--Special case only-->
 </PROPERTIES>
@@ -10057,7 +10064,7 @@ This selection will filter the display to only show Park plug-ins. To create a p
  <PROPERTY ID="0xEA54D283" Eval="0x8A4260A6"/><!--Budget Item: Department-->
  <PROPERTY ID="0xEA54D284" Eval="0x00000000"/><!--Budget Item: Line-->
  <PROPERTY ID="0xEA54D285" Eval="0xCA639989"/><!--Budget Item: Purpose-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="With Visible Building" ID="0x8c8fbc50" ParentID="0x8c8fbc47">
@@ -10083,7 +10090,7 @@ This selection will filter the display to only show Park plug-ins. To create a p
  <PROPERTY ID="0x68EE9764" Eval="ParkAirRadius,ParkWaterRadius,0.00000000,0.00000000"/><!--Pollution radii-->
  <PROPERTY ID="0xC8ED2D84" Eval="ParkWaterConsumed+int(0+BiasedBC*WaterConsumedFactor)"/><!--Water Consumed-->
  <PROPERTY ID="0xEA54D286" Eval="5+ParkMonthlyCost+int(50.+Worth/10.)"/><!--Budget Item: Cost-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Stadium" ID="0x8c8fbc51" ParentID="0x8c8fbc50">
@@ -10118,7 +10125,7 @@ This selection will filter the display to only show Stadium plug-ins. To create 
  <PROPERTY ID="0x8A2602B9" Eval="ItemOrderForStadium"/><!-- Item Order -->
  <PROPERTY ID="0xAA1DD396" Set="0x00001005,0x00001006,0x00001906"/><!--OccupantGroups-->
  <PROPERTY ID="0xAA1DD397" Eval="0x2A4C64E2"/><!--SFX:Query Sound-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Sports Court" ID="0x8c8fbc52" ParentID="0x8c8fbc50">
@@ -10153,7 +10160,7 @@ This selection will filter the display to only show Sports Court plug-ins. To cr
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
  <PROPERTY ID="0xC8ED2D84" Value="0"/><!--Water Consumed-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Plaza with Statue" ID="0x8c8fbc53" ParentID="0x8c8fbc50">
@@ -10185,7 +10192,7 @@ This selection will filter the display to only show Plaza with Statue plug-ins. 
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
  <PROPERTY ID="0xC8ED2D84" Value="0"/><!--Water Consumed-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Playground" ID="0x8c8fbc54" ParentID="0x8c8fbc50">
@@ -10219,7 +10226,7 @@ This selection will filter the display to only show Community Garden plug-ins. T
  <PROPERTY ID="0x2781284F" Remove="2781284F"/><!--Landmark Effect-->
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Park or Field" ID="0x8c8fbc55" ParentID="0x8c8fbc50">
@@ -10251,7 +10258,7 @@ This selection will filter the display to only show Park or Field plug-ins. To c
  <eval name="ParkMonthlyCost"      value="5*LotSizeX*LotSizeY"/>
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Neutral Building" ID="0x8c8fbc59" ParentID="0x8c8fbc50">
@@ -10284,7 +10291,7 @@ This selection will filter the display to only show Neutral plug-ins. To create 
  <PROPERTY ID="0x27812850" Remove="27812850"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="With Invisible Building" ID="0x8c8fbc60" ParentID="0x8c8fbc47">
@@ -10308,7 +10315,7 @@ This selection will filter the display to only show Park plug-ins. To create a p
  <PROPERTY ID="0x68EE9764" Eval="ParkAirRadius,ParkWaterRadius,0.00000000,0.00000000"/><!--Pollution radii-->
  <PROPERTY ID="0xC8ED2D84" Eval="ParkWaterConsumed"/><!--Water Consumed-->
  <PROPERTY ID="0xEA54D286" Eval="ParkMonthlyCost"/><!--Budget Item: Cost-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Sports Court" ID="0x8c8fbc62" ParentID="0x8c8fbc60">
@@ -10343,7 +10350,7 @@ This selection will filter the display to only show Sports Court plug-ins. To cr
  <PROPERTY ID="0x2781284F" Remove="2781284F"/><!--Landmark Effect-->
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Open Plaza" ID="0x8c8fbc63" ParentID="0x8c8fbc60">
@@ -10375,7 +10382,7 @@ This selection will filter the display to only show Open Plaza plug-ins. To crea
  <eval name="ParkMonthlyCost"      value="5*LotSizeX*LotSizeY"/>
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Community Garden" ID="0x8c8fbc64" ParentID="0x8c8fbc60">
@@ -10410,7 +10417,7 @@ This selection will filter the display to only show Playground plug-ins. To crea
  <PROPERTY ID="0x2781284F" Remove="2781284F"/><!--Landmark Effect-->
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Park" ID="0x8c8fbc65" ParentID="0x8c8fbc60">
@@ -10443,7 +10450,7 @@ This selection will filter the display to only show Park plug-ins. To create a P
  <eval name="ParkMonthlyCost"      value="5*LotSizeX*LotSizeY"/>
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Neutral Lot" ID="0x8c8fbc69" ParentID="0x8c8fbc60">
@@ -10477,7 +10484,7 @@ This selection will filter the display to only show Neutral plug-ins. To create 
  <PROPERTY ID="0x27812850" Remove="27812850"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6341" Remove="87CD6341"/><!--Park Effect-->
  <PROPERTY ID="0x87CD6399" Remove="87CD6399"/><!--Landmark Effect-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="WaterFront" ID="0x6d155f57" ParentID="0xcc8fbc2d" img="img_seaport.gif">
@@ -10485,7 +10492,7 @@ This selection will filter the display to only show Neutral plug-ins. To create 
 This selection will filter the display to only show foundation plug-ins.  To create a foundation, drag a model on to this category.
 </HELP>
 <FILTERS>
- <NEEDED ID="0xaa1dd396" Value="0x1519"/>  
+ <NEEDED ID="0xaa1dd396" Value="0x1519"/>
  <NOT ID="0xaa1dd396" Value="0x1509"/>
  <NOT ID="0xaa1dd396" Value="0x1308"/>
  <NOT ID="0xaa1dd396" Value="0x1309"/>
@@ -12882,7 +12889,7 @@ This selection will filter the display to only show Park plug-ins. To create a p
  <PROPERTY ID="0x29244DB5" Eval="0x14"/><!--Flammability-->
  <PROPERTY ID="0x49beda31" Eval="Test(LessThan(Volume,619), 0x01, Test(LessThan(Volume,3068), 0x02, Test(LessThan(Volume,18869), 0x03, Test(LessThan(Volume,326987), 0x04, 0x05 ))))"/>    <!--MaxFireStage-->
  <PROPERTY ID="0xC8ED2D84" Eval="ParkWaterConsumed+int(0+BiasedBC*WaterConsumedFactor)"/><!--Water Consumed-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Airport Object" ID="0x0c8fcc20" ParentID="0x0c8fcc00">
@@ -12903,7 +12910,7 @@ This selection will filter the display to only show Park plug-ins. To create a p
  <PROPERTY ID="0x29244DB5" Eval="0x0A"/><!--Flammability-->
  <PROPERTY ID="0x49beda31" Eval="Test(LessThan(Volume,619), 0x01, Test(LessThan(Volume,3068), 0x02, Test(LessThan(Volume,18869), 0x03, Test(LessThan(Volume,326987), 0x04, 0x05 ))))"/>    <!--MaxFireStage-->
  <PROPERTY ID="0xC8ED2D84" Eval="ParkWaterConsumed+int(0+BiasedBC*WaterConsumedFactor)"/><!--Water Consumed-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Runway" ID="0x0c8fcc30" ParentID="0x0c8fcc00">
@@ -12923,7 +12930,7 @@ This selection will filter the display to only show Runway plug-ins. To create a
  <PROPERTY ID="0x29244DB5" Eval="0x00"/><!--Flammability-->
  <PROPERTY ID="0x49BEDA31" Eval="0x00"/><!--MaxFireStage-->
  <PROPERTY ID="0xC8ED2D84" Eval="ParkWaterConsumed"/><!--Water Consumed-->
-</PROPERTIES> 
+</PROPERTIES>
 </CATEGORY>
 
 <CATEGORY Name="Landmark" ID="0x2c8fbc6c" ParentID="0xcc8fbc2d" img="img_land.gif">
@@ -14376,7 +14383,7 @@ This selection will filter the display to only show $$$ Building as Prop plug-in
  <NEEDED ID="0xE9A316EB" Value="0x03"/>
 </FILTERS>
 <PROPERTIES>
- <PROPERTY ID="0x29244db5" Value="35"/> <!--Flammability-->  
+ <PROPERTY ID="0x29244db5" Value="35"/> <!--Flammability-->
  <PROPERTY ID="0xE9A316EB" Value="0x03"/><!--Prop Wealth-->
 </PROPERTIES>
 </CATEGORY>
@@ -14389,7 +14396,7 @@ This selection will filter the display to only show $$ Building as Prop plug-ins
  <NEEDED ID="0xE9A316EB" Value="0x02"/>
 </FILTERS>
 <PROPERTIES>
- <PROPERTY ID="0x29244db5" Value="40"/> <!--Flammability-->  
+ <PROPERTY ID="0x29244db5" Value="40"/> <!--Flammability-->
  <PROPERTY ID="0xE9A316EB" Value="0x02"/><!--Prop Wealth-->
 </PROPERTIES>
 </CATEGORY>
@@ -14402,7 +14409,7 @@ This selection will filter the display to only show $ Building as Prop plug-ins.
  <NEEDED ID="0xE9A316EB" Value="0x01"/>
 </FILTERS>
 <PROPERTIES>
- <PROPERTY ID="0x29244db5" Value="45"/> <!--Flammability-->  
+ <PROPERTY ID="0x29244db5" Value="45"/> <!--Flammability-->
  <PROPERTY ID="0xE9A316EB" Value="0x01"/><!--Prop Wealth-->
 </PROPERTIES>
 </CATEGORY>
@@ -14415,7 +14422,7 @@ This selection will filter the display to only show Other Building as Prop plug-
  <NEEDED ID="0xE9A316EB" Value="0x00"/>
 </FILTERS>
 <PROPERTIES>
- <PROPERTY ID="0x29244db5" Value="50"/> <!--Flammability-->  
+ <PROPERTY ID="0x29244db5" Value="50"/> <!--Flammability-->
  <PROPERTY ID="0xE9A316EB" Value="0x00"/><!--Prop Wealth-->
 </PROPERTIES>
 </CATEGORY>
@@ -14427,7 +14434,7 @@ This selection will filter the display to only show Ordinary Prop plug-ins.
 <FILTERS>
 </FILTERS>
 <PROPERTIES>
- <PROPERTY ID="0x29244db5" Value="0"/> <!--Flammability-->  
+ <PROPERTY ID="0x29244db5" Value="0"/> <!--Flammability-->
 </PROPERTIES>
 </CATEGORY>
 

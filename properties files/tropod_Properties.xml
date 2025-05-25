@@ -143,7 +143,7 @@
 			<property num="0x2781283f" type="Bool" name="Monopoly Piece" desc="If true, this building is for debug and tuning use only"></property>
 			<property num="0x27812840" type="Uint32" name="Demand Satisfied" desc="Paired values: First value is Demand ID. 2nd Value is how much plopping this building supplies the resource"></property>
 			<property num="0x27812841" type="Uint32" name="Demand Created" desc="Paired values: First value is Demand ID. 2nd Value is how much plopping this building increases the demand for the resource"></property>
- 			<property num="0x27812842" type="Float32" name="Demand Satisfied (float)" desc="IDs from Demand Satisfied are associated to these values instead of the Uint32 values"></property>
+			<property num="0x27812842" type="Float32" name="Demand Satisfied (float)" desc="IDs from Demand Satisfied are associated to these values instead of the Uint32 values"></property>
 			<property num="0x27812843" type="Float32" name="Demand Created (float)" desc="IDs from Demand Created are associated to these values instead of the Uint32 values"></property>
 			<property num="0x27812844" type="Bool" name="Demand Is Variable" desc="if true, the demand simulator ignores demand created and demand satisfied until instructed"></property>
 			<property num="0x2781284f" type="Sint32" name="Landmark Effect" desc="magnitude, radius"></property>
@@ -529,7 +529,7 @@
 			<property num="0x4a0b47f5" type="Bool" name="DataView: Show zone map" desc="Controls the RCI zones to be displayed in the 2D Dataview map itself."></property>
 			<property num="0x4a149631" type="Float32" name="Prop Time of Day" desc="Range of hours on 24-hour clock (0-23) when prop will be at state 0 (visible).  If start and end times are both 0, always visible."></property>
 			<property num="0x4a1f38b5" type="Float32" name="Demand: Neutral Tax Rate vs. Population" desc="What is the highest tax rate you can set before demand suffers?"></property>
-	 		<property num="0x4a1f38b6" type="Float32" name="Demand: Tax Modifier vs. Rate Variance" desc="How much is demand impacted by tax rates above or below neutral?"></property>
+			<property num="0x4a1f38b6" type="Float32" name="Demand: Tax Modifier vs. Rate Variance" desc="How much is demand impacted by tax rates above or below neutral?"></property>
 			<property num="0x4a1f38b7" type="Uint32" name="Demand: Days of Tax Penalty" desc="How long a high tax rate depresses demand (even after it is lowered)"></property>
 			<property num="0x4a1f38c5" type="Float32" name="Demand Cap Relief: Neighbour Connections" desc="Commercial Cap Relief for first Neighbour Connection(more have diminishing returns)"></property>
 			<property num="0x4a1f38c6" type="Float32" name="Demand Cap Relief: Airports" desc="Commercial Cap Relief per connected Co population"></property>
@@ -636,7 +636,7 @@
 			<property num="0x68ddae97" type="Float32" name="Police:Monthly Criminal Rehabilitation Percent" desc="0.0-100.0, See PoliceSimulator"></property>
 			<property num="0x68ddae9a" type="Float32" name="Police:Strike Efficiency" desc="0.0-100.0, See PoliceSimulator"></property>
 			<property num="0x68ddae9b" type="Uint32" name="Police:Max Strike Duration" desc="In days. See PoliceSimulator"></property>
-		 	<property num="0x68ddae9c" type="Float32" name="Police:Min Funding To End Strikes" desc="0.0-100.0, See PoliceSimulator"></property>
+			<property num="0x68ddae9c" type="Float32" name="Police:Min Funding To End Strikes" desc="0.0-100.0, See PoliceSimulator"></property>
 			<property num="0x68ddae9e" type="Float32" name="Police:Strike Response Curve" desc="See PoliceSimulator"></property>
 			<property num="0x68ddae9f" type="Uint32" name="Police:Arrest Threshold" desc="If crime is committed in a cell whose police protection value is above this, they'll get arrested"></property>
 			<property num="0x68ddaea0" type="Float32" name="Jail, Funding To Efficiency Response Curve" desc="See PoliceSimulator"></property>
@@ -770,7 +770,7 @@
 			<property num="0x6b7c5cdd" type="Uint32" name="DataView: Travel Types" desc="List of travel types"></property>
 			<property num="0x6bac0b3e" type="Uint8" name="Path Lookahead Tiles" desc="How many tiles traffic automations should look ahead when determining paths"></property>
 			<property num="0x6c044bb5" type="Uint32" name="SFX:ActiveSound" desc="GUID array of sounds to play (per zoom) when occupant is 'active'"></property>
-			<property num="0x6C1832D1" type="Unit8" name="UDIProp:MarinaBoat8" desc="Property is a key that controls what particular kind of Prop should appear. Some UDIProp Keys are tied in directly with UDI missions"></property>			
+			<property num="0x6C1832D1" type="Unit8" name="UDIProp:MarinaBoat8" desc="Property is a key that controls what particular kind of Prop should appear. Some UDIProp Keys are tied in directly with UDI missions"></property>
 			<property num="0x6C183FFB" type="Unit8" name="UDIProp:MarinaBoat3" desc="Property is a key that controls what particular kind of Prop should appear. Some UDIProp Keys are tied in directly with UDI missions"></property>
 			<property num="0x6c200139" type="Uint32" name="Playerdrive Vehicle Max Count" desc="Desired maximum # of vehicles in the world during player-drive"></property>
 			<property num="0x6c36283c" type="Unit8" name="UDIProp:CruiseShip" desc="Property is a key that controls what particular kind of Prop should appear. Some UDIProp Keys are tied in directly with UDI missions"></property>
@@ -990,6 +990,7 @@
 			<property num="0x9EE12410" type="Sint64" name="Budget Custom Line Item Variable Expense/Income: Res. Total Pop." desc="Factor applied to the budget item expense based on the total residential population. The format is a group of 3 Sint64 values representing the line item id followed by the numerator and denominator for the total residential population factor."></property>
 			<property num="0x9EE12411" type="Sint64" name="Budget Custom Line Item Variable Expense/Income: Res. Wealth Groups Pop." desc="Factor applied to the budget item expense based on the residential wealth group populations. The format is a group of 7 Sint64 values representing the line item id followed by the numerators and denominators for the low, medium, and high wealth group factors."></property>
 			<property num="0x9EE12412" type="Sint64" name="Budget Custom Line Item Variable Expense/Income: Tourism" desc="Factor applied to the budget item expense/income based on an algorithm that approximates local/regional tourism. The format is a group of 4 Sint64 fields representing the line number id followed by a numerator and denominator national and international tourism factor and a Sint64 geopolitical factor."></property>
+			<property num="0x9EE12413" type="String" name="Budget Custom Line Item Variable Expense/Income: Lua Function" desc="The name of the Lua function that calculates the expense or income."></property>
 			<property num="0xa7607d70" type="Sint32" name="WeeksForCompleteTemperatureSimulation" desc="WeeksForCompleteTemperatureSimulation"></property>
 			<property num="0xa7607d71" type="Sint32" name="WeeksForCompleteMoistureSimulation" desc="WeeksForCompleteMoistureSimulation"></property>
 			<property num="0xa7607d72" type="Sint32" name="SimulationSpreadWritingRadius" desc="SimulationSpreadWritingRadius"></property>
@@ -1394,7 +1395,7 @@
 			<property num="0xebff69e7" type="Float32" name="Budget: Difficulty Tax Multiplier" desc="Multiplier for tax revenue by difficulty type. Easy:Medium:Hard"></property>
 			<property num="0xec15654a" type="Float32" name="Mayor Limo Money Properties" desc="Cost per second, desirability radius meters, desirability magnitude"></property>
 			<property num="0xEC1832E7" type="Unit8" name="UDIProp:MarinaBoat7" desc="Property is a key that controls what particular kind of Prop should appear. Some UDIProp Keys are tied in directly with UDI missions"></property>
-			<property num="0xEC1B2361" type="Uint32" name="UI Status Window" desc="Property is referenced by Instance ID, and points to the User Interface file for the Status Window. The Status Window displays the Control Keys for each of the vehicles"></property>			
+			<property num="0xEC1B2361" type="Uint32" name="UI Status Window" desc="Property is referenced by Instance ID, and points to the User Interface file for the Status Window. The Status Window displays the Control Keys for each of the vehicles"></property>
 			<property num="0xec214180" type="Uint32" name="Auxiliary Model 3 Key" desc="Type/Group/Instance for additional model"></property>
 			<property num="0xEC39DD14" type="Unit8" name="UDIProp:FerryBoat0" desc="Property is a key that controls what particular kind of Prop should appear. Some UDIProp Keys are tied in directly with UDI missions"></property>
 			<property num="0xec3bd470" type="Uint8" name="RotationsAllowed" desc="RotationsAllowed. North, South, East, West"></property>
