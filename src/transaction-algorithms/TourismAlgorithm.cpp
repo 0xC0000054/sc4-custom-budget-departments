@@ -23,6 +23,7 @@
 #include "TourismAlgorithm.h"
 #include "cIGZIStream.h"
 #include "cIGZOStream.h"
+#include "IPopulationProvider.h"
 #include "TransactionAlgorithmStaticPointers.h"
 
 TourismAlgorithm::TourismAlgorithm()

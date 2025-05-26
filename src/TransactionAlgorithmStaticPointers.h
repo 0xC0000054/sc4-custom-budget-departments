@@ -21,8 +21,8 @@
  */
 
 #pragma once
-#include "IPopulationProvider.h"
 
+class IPopulationProvider;
 class cISCLua;
 
 extern IPopulationProvider* spPopulationProvider;
